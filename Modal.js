@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Alert, Modal, StyleSheet, Text, Pressable, View,TextInput } from "react-native";
 
 const Mod = (props) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [item,setItem]=useState("")
     const [price,setPrice]=useState("")
+
+
     
    const saveItem =async()=>{
     const genrater=()=> {return "id" + Math.random().toString(16).slice(2)}
@@ -38,7 +40,7 @@ const Mod = (props) => {
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Add Item</Text>
             <View style={{padding:5}}><TextInput value={item} onChangeText={(val)=>setItem(val)} placeholder="Enter Name Of Item"/></View>
-            <View style={{padding:5}}><TextInput value={price} onChangeText={(val)=>setPrice(val)} placeholder="Enter Amount"/></View>
+            <View style={{padding:5}}><TextInput keyboardType='numeric' value={price} onChangeText={(val)=>setPrice(val)} placeholder="Enter Amount"/></View>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => setModalVisible(!modalVisible)}

@@ -64,10 +64,15 @@ import Mod from "./Modal";
   
 // ];
 export default function App() {
+
     //const [val, setval] = useState([]);
   
   const [Ddata,Setddata]=useState([])
   const [Total,SetTotal]=useState(0)
+
+  useEffect(() => {
+    storagesave()
+  }, [Ddata])
 
   const deleteItemById = (id) => {
     console.log(id)
@@ -85,8 +90,12 @@ export default function App() {
   }
   async function storagesave(){ 
     let convert =JSON.stringify(Ddata)
-    await AsyncStorage.setItem('@storage_Key',convert)
-    console.log("storage done")
+    console.log(typeof(convert))
+    if(convert==="[]" ||convert===""){
+      console.log("ye chala")
+    }else{await AsyncStorage.setItem('@storage_Key',convert)
+    console.log("storage done")}
+    
   }
 // const check=(item)=>{
 //   console.log(item)// for check only
