@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState,useEffect } from "react";
 
-import { SafeAreaView, FlatList, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { SafeAreaView, FlatList, StyleSheet, Text, View, TouchableOpacity,StatusBar } from "react-native";
 import Mod from "./Modal";
 
 // const persons = [
@@ -72,7 +72,16 @@ export default function App() {
 
   useEffect(() => {
     storagesave()
+    totalSet()
   }, [Ddata])
+
+  const totalSet=()=>{
+    let value = 0
+    for (let i = 0; i < Ddata.length; i++) {
+      value += Number(Ddata[i].price)
+    }
+  SetTotal(value)
+  }
 
   const deleteItemById = (id) => {
     console.log(id)
@@ -135,7 +144,12 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-  
+     <StatusBar
+        animated={true}
+        backgroundColor="#61dafb"
+        
+        
+      />
     <View style={{width:"80%",height:"10%",alignSelf:"center",}}>
     <Mod center={center}/>
     </View>
