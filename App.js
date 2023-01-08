@@ -32,7 +32,7 @@ export default function App() {
   storagesave()
 }else{
   console.log("niche wala part chala storage wala" )
-  await AsyncStorage.removeItem('@storage_Key')
+  await AsyncStorage.setItem('@storage_Key',"[]")
   }
 }
   
