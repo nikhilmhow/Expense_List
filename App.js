@@ -3,15 +3,19 @@ import React, { useState,useEffect } from "react";
 
 import { SafeAreaView, FlatList, StyleSheet, Text, View, TouchableOpacity,StatusBar } from "react-native";
 import Mod from "./Modal";
+import Budjet from "./budjet";
 
 export default function App() {
 
   const [Ddata,Setddata]=useState([])
   const [Total,SetTotal]=useState(0)
+  const [budget,setBudget]=useState(0)
+  
 
   useEffect(() => {
     storagesave()
     totalSet()
+    updatepriBudget()
   }, [Ddata])
 
   const totalSet=()=>{
@@ -21,6 +25,21 @@ export default function App() {
     }
   SetTotal(value)
   }
+
+  async function updatepriBudget(){
+    const val = await AsyncStorage.getItem('@storagebudget')
+    if(val){
+      setBudget(JSON.parse(val))
+    }
+  }
+
+  const cen =async (recive)=>{
+    if(recive){ 
+      }
+      console.log(recive)
+      await AsyncStorage.setItem('@storagebudget',JSON.stringify(recive))
+      console.warn("Success Storage")
+}
 
   const  deleteItemById = async (id) => {
     console.log(id)
@@ -53,7 +72,6 @@ export default function App() {
    
     }else{await AsyncStorage.setItem('@storage_Key',convert)
     console.log("storage done")}
-    
   }
 
   const center =async (recive)=>{
@@ -64,7 +82,6 @@ export default function App() {
     console.log("ye update aya",recive)
     storagesave()
   
-
   }else{ 
     const preconvert=JSON.parse(await AsyncStorage.getItem('@storage_Key'))
      console.log(findtotal(preconvert))
@@ -72,7 +89,6 @@ export default function App() {
   }
    
   }
-
    useEffect(() => {
     center()
    },[]);
@@ -83,8 +99,9 @@ export default function App() {
         animated={true}
         backgroundColor="#61dafb"
       />
-    <View style={{width:"80%",height:"10%",alignSelf:"center",}}>
+    <View style={{width:"80%",height:"10%",alignSelf:"center",flexDirection:"row"}}>
     <Mod center={center}/>
+    <Budjet cen={cen}/>
     </View>
     <FlatList 
         data={Ddata}
@@ -93,12 +110,12 @@ export default function App() {
         <View style={{marginHorizontal:2}}><Text style={styles.item}>{item.price}</Text></View></View>}
         keyExtractor={(item) => item.id}
       />
-
       <View style={{alignItems:"center",flexDirection:"row",justifyContent:"center"}}>
-      <View style={{marginHorizontal:5}}><Text style={{fontSize:25}}>Total</Text></View><View><Text style={{fontSize:28}}>{Total}</Text></View></View>
+      <View style={{marginHorizontal:5,}}><Text style={{fontSize:25}}>Total</Text></View><View><Text style={{fontSize:28}}>{Total}</Text></View></View>
+      <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-evenly"}}>
       <TouchableOpacity onPress={async()=>{AsyncStorage.removeItem('@storage_Key'), Setddata("")}}><View style={{padding:2}}><Text>Clear All</Text></View></TouchableOpacity>
-     
-      
+      <TouchableOpacity onPress={async()=>{AsyncStorage.removeItem('@storage_Key'), Setddata("")}}><View style={{padding:2}}><Text>Budget {budget}</Text></View></TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -111,7 +128,6 @@ const styles = StyleSheet.create({
   item: {
     padding: 15,
     fontSize: 15,
-    
     borderWidth:1,
     backgroundColor:"#f5f5f5",
     borderRadius:20
