@@ -9,9 +9,15 @@ const Mod = (props) => {
 
     
    const saveItem =async()=>{
+    Date.prototype.getMonthName = function() {
+      var monthNames = [ "January", "February", "March", "April", "May", "June", 
+                         "July", "August", "September", "October", "November", "December" ];
+      return monthNames[this.getMonth()];
+  }
+         
     const genrater=()=> {return "id" + Math.random().toString(16).slice(2)}
     // console.log(genrater())
-    let data={"item":item,"price":price,"id":String(genrater())}
+    let data={"item":item,"price":price,"id":String(genrater()),"month":new Date().getMonthName()}
     try {
      if(data.item===""||data.price===""){
       Alert.alert("please provide both Values")
@@ -48,7 +54,7 @@ const Mod = (props) => {
               <Text style={styles.textStyle}>Back</Text>
             </Pressable>
             <Pressable
-              style={[styles.button, styles.buttonClose]}
+              style={[{margin:2},styles.button, styles.buttonClose]}
               onPress={()=>saveItem()}
             >
               <Text style={styles.textStyle}>Add</Text>
@@ -71,10 +77,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22
+    marginTop: 0
   },
   modalView: {
-    margin: 20,
+    margin: 10,
     backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
@@ -100,11 +106,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#2196F3",
   },
   textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-    fontSize:20,
-    color:"blue"
+    // color: "white",
+    // fontWeight: "bold",
+    // textAlign: "center",
+    // fontSize:20,
+    // color:"blue"
+    textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:19,color:"white"
   },
   modalText: {
 

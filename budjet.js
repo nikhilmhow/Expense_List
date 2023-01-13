@@ -1,12 +1,14 @@
 import { Alert, Modal, StyleSheet, Text, Pressable, View,TextInput } from "react-native";
 import React,{useState} from 'react'
+import { FontAwesome5 } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 
-const Budjet = ({cen}) => {
+const Budjet = ({cen,val,col}) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [budget,setBudget] = useState(0);
     
   return (
-    <View style={styles.centeredView}>
+    <View style={{padding:4,borderRadius:8,backgroundColor:col,borderRadius:5}}>
       <Modal
         animationType="slide"
         transparent={true}
@@ -38,7 +40,7 @@ const Budjet = ({cen}) => {
       <Pressable
         // style={[styles.button, styles.buttonOpen]}
         onPress={() => setModalVisible(true)}>
-        <Text style={styles.textStyle}>+</Text>
+        <Text style={{ paddingVertical:1, paddingHorizontal:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}><AntDesign name="wallet" size={18} color="white" /> {val}</Text>
       </Pressable>
     </View>
   )
