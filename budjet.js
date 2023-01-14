@@ -1,6 +1,5 @@
 import { Alert, Modal, StyleSheet, Text, Pressable, View,TextInput } from "react-native";
 import React,{useState} from 'react'
-import { FontAwesome5 } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 
 const Budjet = ({cen,val,col}) => {

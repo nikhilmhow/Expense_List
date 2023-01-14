@@ -1,29 +1,44 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState,useEffect } from "react";
 
-import { SafeAreaView, FlatList, StyleSheet, Text, View, TouchableOpacity,StatusBar,ToastAndroid } from "react-native";
+import { SafeAreaView, FlatList, StyleSheet, Text, View, TouchableOpacity,StatusBar,ToastAndroid,Alert } from "react-native";
 import Mod from "./Modal";
 import Budjet from "./budjet";
 import { MaterialIcons } from '@expo/vector-icons';
 
 export default function App() {
 
-  const [Ddata,Setddata]=useState([])
+  const [Ddata,Setddata]=useState([])//isko set karo d data main
   const [Total,SetTotal]=useState(0)
   const [budget,setBudget]=useState(0)
   const [month,setmonth]=useState("Waiting")
   const [Color,setColor]=useState("green")
   
 
+    
+
   useEffect(() => {
+
     storagesave()
     totalSet()
-    updatepriBudget()
     cal()
+    updatepriBudget()
+    
     colorchange()
     ToastAndroid.showWithGravity("useeffect run", ToastAndroid.SHORT,ToastAndroid.CENTER)
 
   }, [Ddata])
+
+  
+  const createAlert = (func,ale,msg) =>
+  Alert.alert(ale, msg, [
+    {
+      text: 'Cancel',
+      onPress: () => console.log('Cancel Pressed'),
+      style: 'cancel',
+    },
+    {text: 'OK', onPress: () => func()},
+  ]);
 
   const totalSet=()=>{
     let value = 0
@@ -90,7 +105,13 @@ export default function App() {
     ToastAndroid.showWithGravity("Item Added", ToastAndroid.SHORT,ToastAndroid.CENTER)}
   }
 async function cal(){
+try {
   setmonth(Ddata[0].month)
+} catch (error) {
+  console.log(error)
+}
+
+
 }
 
   const center =async (recive)=>{
@@ -120,18 +141,17 @@ async function cal(){
       />
     <View style={{width:"80%",height:"10%",alignSelf:"center",flexDirection:"row"}}>
     <Mod center={center}/>
-    
     </View>
     <FlatList 
         data={Ddata}
         renderItem={({ item }) => <View  style={{flexDirection:"row",justifyContent:"space-between",backgroundColor:"yellow",marginVertical:3, borderRadius:15}}>
-        <View style={{padding:2}}><Text onPress={() => deleteItemById(item.id)} style={styles.item}>{item.item}</Text></View>
+        <View style={{padding:2}}><Text onPress={()=>createAlert(() => deleteItemById(item.id),"Delete Item","Sure want to remove item")} style={styles.item}>{item.item}</Text></View>
         <View style={{marginHorizontal:2}}><Text style={styles.item}>{item.price}</Text></View></View>}
         keyExtractor={(item) => item.id}/>
       <View style={{alignItems:"center",flexDirection:"row",justifyContent:"center",backgroundColor:"rgba(0, 0, 0, 0.23)",borderRadius:10,marginVertical:5}}>
       <View style={{marginHorizontal:5,}}><Text style={{fontSize:25}}>Total</Text></View><View><Text style={{fontSize:28,color:"green"}}>{Total}</Text></View></View>
       <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-evenly"}}>
-      <TouchableOpacity  onPress={async()=>{AsyncStorage.removeItem('@storage_Key'), Setddata("")}}><View style={{flexDirection:"row",backgroundColor:"orange",borderRadius:5}}><MaterialIcons name="delete-outline" size={35} color="white"/><Text style={{paddingRight:5, paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>Clear All</Text></View></TouchableOpacity>
+      <TouchableOpacity  onPress={()=>createAlert(async()=>{AsyncStorage.removeItem('@storage_Key'), Setddata("")},"Remove All Item","Delete Permanently")}><View style={{flexDirection:"row",backgroundColor:"orange",borderRadius:5}}><MaterialIcons name="delete-outline" size={35} color="white"/><Text style={{paddingRight:5, paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>Clear All</Text></View></TouchableOpacity>
       <TouchableOpacity ><View style={{paddingHorizontal:5,backgroundColor:"grey",borderRadius:5}}><Text style={{ paddingHorizontal:5,paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>{month}</Text></View></TouchableOpacity>
       <Budjet cen={cen} col={Total>budget?"red":"green"} val={budget}/>
       {/* <TouchableOpacity onPress={async()=>{AsyncStorage.removeItem('@storage_Key'), Setddata("")}}><View style={{padding:4,backgroundColor:Total>budget?"red":"green",borderRadius:8}}><Text>Budget {budget}</Text></View></TouchableOpacity> */}
