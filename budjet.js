@@ -23,13 +23,7 @@ const Budjet = ({cen,val,col}) => {
             <View style={{padding:5}}><TextInput value={budget} keyboardType="number-pad" onChangeText={(val)=>setBudget(val)} placeholder="Enter Your Budget"/></View>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={styles.textStyle}>Back</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={()=>cen(budget)}
+              onPress={()=>{cen(budget),setModalVisible(!modalVisible)}}
             >
               <Text style={styles.textStyle}>Add</Text>
             </Pressable>

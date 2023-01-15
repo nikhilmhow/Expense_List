@@ -12,20 +12,16 @@ export default function App() {
   const [Total,SetTotal]=useState(0)
   const [budget,setBudget]=useState(0)
   const [month,setmonth]=useState("Waiting")
-  const [Color,setColor]=useState("green")
+  // const [Color,setColor]=useState("green")
   
-
-    
-
   useEffect(() => {
 
     storagesave()
     totalSet()
     cal()
-    updatepriBudget()
-    
-    colorchange()
-    ToastAndroid.showWithGravity("useeffect run", ToastAndroid.SHORT,ToastAndroid.CENTER)
+    updatepriBudget()   
+ 
+    // ToastAndroid.showWithGravity("useeffect run", ToastAndroid.SHORT,ToastAndroid.CENTER)
 
   }, [Ddata])
 
@@ -47,13 +43,7 @@ export default function App() {
     }
   SetTotal(value)
   }
-  const colorchange=()=>{
-    console.log("color",Total,budget)
-    if(Total>=budget){
-      console.log("ye nahi chalna chaiye")
-      setColor("red")
-    }
-  }
+
 
   async function updatepriBudget(){
     const val = await AsyncStorage.getItem('@storagebudget')
@@ -66,6 +56,7 @@ export default function App() {
     if(recive){ 
       }
       console.log(recive)
+      setBudget(recive)
       await AsyncStorage.setItem('@storagebudget',JSON.stringify(recive))
       console.warn("Success Storage")
 }
@@ -102,18 +93,26 @@ export default function App() {
    
     }else{await AsyncStorage.setItem('@storage_Key',convert)
     console.log("storage done")
-    ToastAndroid.showWithGravity("Item Added", ToastAndroid.SHORT,ToastAndroid.CENTER)}
+    // 
+  }
   }
 async function cal(){
 try {
-  setmonth(Ddata[0].month)
+  if(Ddata.length >= 1){
+    console.log("undefined haidfdfdfdfdfdfdfdfdfdfdf")
+  setmonth(Ddata[0].month)}else{
+    Date.prototype.getMonthName = function() {
+      var monthNames = [ "January", "February", "March", "April", "May", "June", 
+                         "July", "August", "September", "October", "November", "December" ];
+      return monthNames[this.getMonth()];
+  }
+    setmonth(new Date().getMonthName())
+  }
+ 
 } catch (error) {
   console.log(error)
 }
-
-
 }
-
   const center =async (recive)=>{
     if(recive){ 
     Setddata([...Ddata,recive])
@@ -151,7 +150,8 @@ try {
       <View style={{alignItems:"center",flexDirection:"row",justifyContent:"center",backgroundColor:"rgba(0, 0, 0, 0.23)",borderRadius:10,marginVertical:5}}>
       <View style={{marginHorizontal:5,}}><Text style={{fontSize:25}}>Total</Text></View><View><Text style={{fontSize:28,color:"green"}}>{Total}</Text></View></View>
       <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-evenly"}}>
-      <TouchableOpacity  onPress={()=>createAlert(async()=>{AsyncStorage.removeItem('@storage_Key'), Setddata("")},"Remove All Item","Delete Permanently")}><View style={{flexDirection:"row",backgroundColor:"orange",borderRadius:5}}><MaterialIcons name="delete-outline" size={35} color="white"/><Text style={{paddingRight:5, paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>Clear All</Text></View></TouchableOpacity>
+      <TouchableOpacity  onPress={()=>createAlert(async()=>{AsyncStorage.removeItem('@storage_Key'), Setddata("")},"Remove All Item","Delete Permanently")}><View style={{flexDirection:"row",backgroundColor:"orange",borderRadius:5}}>
+      <MaterialIcons name="delete-outline" size={35} color="white"/><Text style={{paddingRight:5, paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>Clear All</Text></View></TouchableOpacity>
       <TouchableOpacity ><View style={{paddingHorizontal:5,backgroundColor:"grey",borderRadius:5}}><Text style={{ paddingHorizontal:5,paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>{month}</Text></View></TouchableOpacity>
       <Budjet cen={cen} col={Total>budget?"red":"green"} val={budget}/>
       {/* <TouchableOpacity onPress={async()=>{AsyncStorage.removeItem('@storage_Key'), Setddata("")}}><View style={{padding:4,backgroundColor:Total>budget?"red":"green",borderRadius:8}}><Text>Budget {budget}</Text></View></TouchableOpacity> */}
@@ -168,9 +168,11 @@ const styles = StyleSheet.create({
   },
   item: {
     padding: 15,
-    fontSize: 15,
+    fontSize: 18,
     borderWidth:1,
     backgroundColor:"#f5f5f5",
-    borderRadius:20
+    borderRadius:20,
+    fontWeight:"bold",
+    color:"blue"
   }
 });
