@@ -5,6 +5,7 @@ import { SafeAreaView, FlatList, StyleSheet, Text, View, TouchableOpacity,Status
 import Mod from "./Modal";
 import Budjet from "./budjet";
 import { MaterialIcons } from '@expo/vector-icons';
+import Cal from "./Cal";
 
 export default function App() {
 
@@ -12,6 +13,7 @@ export default function App() {
   const [Total,SetTotal]=useState(0)
   const [budget,setBudget]=useState(0)
   const [month,setmonth]=useState("Waiting")
+
   // const [Color,setColor]=useState("green")
   
   useEffect(() => {
@@ -152,7 +154,8 @@ try {
       <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-evenly"}}>
       <TouchableOpacity  onPress={()=>createAlert(async()=>{AsyncStorage.removeItem('@storage_Key'), Setddata("")},"Remove All Item","Delete Permanently")}><View style={{flexDirection:"row",backgroundColor:"orange",borderRadius:5}}>
       <MaterialIcons name="delete-outline" size={35} color="white"/><Text style={{paddingRight:5, paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>Clear All</Text></View></TouchableOpacity>
-      <TouchableOpacity ><View style={{paddingHorizontal:5,backgroundColor:"grey",borderRadius:5}}><Text style={{ paddingHorizontal:5,paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>{month}</Text></View></TouchableOpacity>
+      <Cal val={month}/>
+      {/* <TouchableOpacity ><View style={{paddingHorizontal:5,backgroundColor:"grey",borderRadius:5}}><Text style={{ paddingHorizontal:5,paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>{month}</Text></View></TouchableOpacity> */}
       <Budjet cen={cen} col={Total>budget?"red":"green"} val={budget}/>
       {/* <TouchableOpacity onPress={async()=>{AsyncStorage.removeItem('@storage_Key'), Setddata("")}}><View style={{padding:4,backgroundColor:Total>budget?"red":"green",borderRadius:8}}><Text>Budget {budget}</Text></View></TouchableOpacity> */}
       </View>
