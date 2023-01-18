@@ -1,16 +1,20 @@
-import { Alert, Modal, StyleSheet, Text, Pressable, View,TextInput,TouchableOpacity } from "react-native";
-import React,{useState,useCallback} from 'react'
-import { AntDesign } from '@expo/vector-icons';
-
+import { Alert, Modal, StyleSheet, Text, Pressable, View,TextInput } from "react-native";
+import React,{useState} from 'react'
+import { Entypo } from '@expo/vector-icons';
+import DropDownPicker from 'react-native-dropdown-picker'
 
 const Cal = ({val}) => {
     const [modalVisible, setModalVisible] = useState(false);
+    const [open, setOpen] = useState(false);
+  const [value1, setValue] = useState(null);
+  const [items, setItems] = useState([
+    {label: 'Apple', value: 'apple'},
+    {label: 'Banana', value: 'banana'}
+  ]);
    
-
-    
     
   return (
-    <View style={{padding:4,borderRadius:8,backgroundColor:"grey",borderRadius:5}}>
+    <View style={{padding:4,borderRadius:8,borderRadius:5,backgroundColor:"grey",borderRadius:5}}>
       <Modal
         animationType="slide"
         transparent={true}
@@ -21,13 +25,27 @@ const Cal = ({val}) => {
         }}
       >
         <View style={styles.centeredView}>
-        <Text>Gu</Text>
+        
+        <Text style={styles.paragraph}>
+        Select Record Month
+      </Text>
+      <DropDownPicker
+      open={open}
+      value={value1}
+      items={items}
+      setOpen={setOpen}
+      setValue={setValue}
+      setItems={setItems}
+      onChangeValue={(rec) => console.log(rec)}
+    />
+
+        
         </View>
       </Modal>
       <Pressable
         // style={[styles.button, styles.buttonOpen]}
         onPress={() => setModalVisible(true)}>
-        <Text style={{ paddingVertical:1, paddingHorizontal:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}><AntDesign name="wallet" size={18} color="white" /> {val}</Text>
+        <Text style={{ paddingVertical:1, paddingHorizontal:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}><Entypo name="calendar" size={18} color="white"/> {val}</Text>
       </Pressable>
     </View>
   )
@@ -80,4 +98,4 @@ const styles = StyleSheet.create({
     }
   });
 
-export default Cal
+export default Cal;

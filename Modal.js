@@ -1,22 +1,15 @@
 import React, { useState } from "react";
 import { Alert, Modal, StyleSheet, Text, Pressable, View,TextInput } from "react-native";
 
+
+
 const Mod = (props) => {
+
     const [modalVisible, setModalVisible] = useState(false);
     const [item,setItem]=useState("")
     const [price,setPrice]=useState("")
-<<<<<<< HEAD
 
-<<<<<<< HEAD
-    if (!fontsLoaded) {
-      console.log("nahi chala font")
-      return null;
-    }
-=======
->>>>>>> parent of cdae157 (fix last elemnt not update)
-=======
-
->>>>>>> parent of 735b753 (stable)
+    
     
    const saveItem =async()=>{
     Date.prototype.getMonthName = function() {

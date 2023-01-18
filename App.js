@@ -5,40 +5,27 @@ import { SafeAreaView, FlatList, StyleSheet, Text, View, TouchableOpacity,Status
 import Mod from "./Modal";
 import Budjet from "./budjet";
 import { MaterialIcons } from '@expo/vector-icons';
-import Cal from "./Cal";
+import Cal from "./Cal"
 
 export default function App() {
-<<<<<<< HEAD
 
   const [Ddata,Setddata]=useState([])//isko set karo d data main
-=======
-    //const [val, setval] = useState([]);
-  
-  const [Ddata,Setddata]=useState([])
->>>>>>> parent of cdae157 (fix last elemnt not update)
   const [Total,SetTotal]=useState(0)
   const [budget,setBudget]=useState(0)
   const [month,setmonth]=useState("Waiting")
-<<<<<<< HEAD
 
-<<<<<<< HEAD
   // const [Color,setColor]=useState("green")
-=======
-  const [Color,setColor]=useState("green")
->>>>>>> parent of 735b753 (stable)
-  
 
-    
+  const [Color,setColor]=useState("green")
 
   useEffect(() => {
-
-    storagesave()
-    totalSet()
-    cal()
-    updatepriBudget()
+     storagesave()
+     totalSet()
+     cal()
+     updatepriBudget()
     
-    colorchange()
-    ToastAndroid.showWithGravity("useeffect run", ToastAndroid.SHORT,ToastAndroid.CENTER)
+     colorchange()
+    // ToastAndroid.showWithGravity("useeffect run", ToastAndroid.SHORT,ToastAndroid.CENTER)
 
   }, [Ddata])
 
@@ -60,6 +47,7 @@ export default function App() {
     }
   SetTotal(value)
   }
+
   const colorchange=()=>{
     console.log("color",Total,budget)
     if(Total>=budget){
@@ -69,10 +57,15 @@ export default function App() {
   }
 
   async function updatepriBudget(){
-    const val = await AsyncStorage.getItem('@storagebudget')
+    try {
+      const val = await AsyncStorage.getItem('@storagebudget')
     if(val){
       setBudget(JSON.parse(val))
     }
+    } catch (error) {
+      console.log("nahi load budget")
+    }
+  
   }
 
   const cen =async (recive)=>{
@@ -84,9 +77,7 @@ export default function App() {
 }
 
   const  deleteItemById = async (id) => {
-=======
-  const deleteItemById = (id) => {
->>>>>>> parent of cdae157 (fix last elemnt not update)
+
     console.log(id)
    const filteredData = Ddata.filter(item => item.id !== id);
   // Setddata({ Ddata: filteredData });
@@ -108,9 +99,10 @@ export default function App() {
     }
   SetTotal(value)
   }
+
   async function storagesave(){ 
     let convert =JSON.stringify(Ddata)
-<<<<<<< HEAD
+
     console.log(typeof(convert))
     if(convert==="[]" ||convert===""){
       console.log("ye chala",convert)
@@ -118,18 +110,11 @@ export default function App() {
       //await AsyncStorage.removeItem('@storage_Key')
    
     }else{await AsyncStorage.setItem('@storage_Key',convert)
-    console.log("storage done")
-<<<<<<< HEAD
-    // 
-=======
-    await AsyncStorage.setItem('@storage_Key',convert)
-    console.log("storage done")
->>>>>>> parent of cdae157 (fix last elemnt not update)
+    console.log("storage done")}
+
   }
-=======
-    ToastAndroid.showWithGravity("Item Added", ToastAndroid.SHORT,ToastAndroid.CENTER)}
->>>>>>> parent of 735b753 (stable)
-  }
+
+
 async function cal(){
 try {
   setmonth(Ddata[0].month)
@@ -177,15 +162,16 @@ try {
       <View style={{alignItems:"center",flexDirection:"row",justifyContent:"center",backgroundColor:"rgba(0, 0, 0, 0.23)",borderRadius:10,marginVertical:5}}>
       <View style={{marginHorizontal:5,}}><Text style={{fontSize:25}}>Total</Text></View><View><Text style={{fontSize:28,color:"green"}}>{Total}</Text></View></View>
       <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-evenly"}}>
-<<<<<<< HEAD
+
       <TouchableOpacity  onPress={()=>createAlert(async()=>{AsyncStorage.removeItem('@storage_Key'), Setddata("")},"Remove All Item","Delete Permanently")}><View style={{flexDirection:"row",backgroundColor:"orange",borderRadius:5}}>
       <MaterialIcons name="delete-outline" size={35} color="white"/><Text style={{paddingRight:5, paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>Clear All</Text></View></TouchableOpacity>
-      <Cal val={month}/>
+
+      <Cal val={month}/> 
       {/* <TouchableOpacity ><View style={{paddingHorizontal:5,backgroundColor:"grey",borderRadius:5}}><Text style={{ paddingHorizontal:5,paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>{month}</Text></View></TouchableOpacity> */}
-=======
-      <TouchableOpacity  onPress={()=>createAlert(async()=>{AsyncStorage.removeItem('@storage_Key'), Setddata("")},"Remove All Item","Delete Permanently")}><View style={{flexDirection:"row",backgroundColor:"orange",borderRadius:5}}><MaterialIcons name="delete-outline" size={35} color="white"/><Text style={{paddingRight:5, paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>Clear All</Text></View></TouchableOpacity>
-      <TouchableOpacity ><View style={{paddingHorizontal:5,backgroundColor:"grey",borderRadius:5}}><Text style={{ paddingHorizontal:5,paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>{month}</Text></View></TouchableOpacity>
->>>>>>> parent of 735b753 (stable)
+
+      {/* <TouchableOpacity ><View style={{paddingHorizontal:5,backgroundColor:"grey",borderRadius:5}}><Text style={{ paddingHorizontal:5,paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>{month}</Text></View></TouchableOpacity> */}
+
+
       <Budjet cen={cen} col={Total>budget?"red":"green"} val={budget}/>
       {/* <TouchableOpacity onPress={async()=>{AsyncStorage.removeItem('@storage_Key'), Setddata("")}}><View style={{padding:4,backgroundColor:Total>budget?"red":"green",borderRadius:8}}><Text>Budget {budget}</Text></View></TouchableOpacity> */}
       </View>
