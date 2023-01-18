@@ -8,12 +8,19 @@ import { MaterialIcons } from '@expo/vector-icons';
 import Cal from "./Cal";
 
 export default function App() {
+<<<<<<< HEAD
 
   const [Ddata,Setddata]=useState([])//isko set karo d data main
+=======
+    //const [val, setval] = useState([]);
+  
+  const [Ddata,Setddata]=useState([])
+>>>>>>> parent of cdae157 (fix last elemnt not update)
   const [Total,SetTotal]=useState(0)
   const [budget,setBudget]=useState(0)
   const [month,setmonth]=useState("Waiting")
 
+<<<<<<< HEAD
   // const [Color,setColor]=useState("green")
   
   useEffect(() => {
@@ -64,6 +71,9 @@ export default function App() {
 }
 
   const  deleteItemById = async (id) => {
+=======
+  const deleteItemById = (id) => {
+>>>>>>> parent of cdae157 (fix last elemnt not update)
     console.log(id)
    const filteredData = Ddata.filter(item => item.id !== id);
   // Setddata({ Ddata: filteredData });
@@ -87,6 +97,7 @@ export default function App() {
   }
   async function storagesave(){ 
     let convert =JSON.stringify(Ddata)
+<<<<<<< HEAD
     console.log(typeof(convert))
     if(convert==="[]" ||convert===""){
       console.log("ye chala",convert)
@@ -96,6 +107,10 @@ export default function App() {
     }else{await AsyncStorage.setItem('@storage_Key',convert)
     console.log("storage done")
     // 
+=======
+    await AsyncStorage.setItem('@storage_Key',convert)
+    console.log("storage done")
+>>>>>>> parent of cdae157 (fix last elemnt not update)
   }
   }
 async function cal(){

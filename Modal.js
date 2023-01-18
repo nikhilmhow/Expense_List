@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState } from "react";
 import { Alert, Modal, StyleSheet, Text, Pressable, View,TextInput } from "react-native";
 import { useFonts,Inter_500Medium} from "@expo-google-fonts/inter";
 
@@ -10,11 +10,14 @@ const Mod = (props) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [item,setItem]=useState("")
     const [price,setPrice]=useState("")
+<<<<<<< HEAD
 
     if (!fontsLoaded) {
       console.log("nahi chala font")
       return null;
     }
+=======
+>>>>>>> parent of cdae157 (fix last elemnt not update)
     
    const saveItem =async()=>{
     Date.prototype.getMonthName = function() {
@@ -54,7 +57,7 @@ const Mod = (props) => {
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Add Item</Text>
             <View style={{padding:5}}><TextInput value={item} onChangeText={(val)=>setItem(val)} placeholder="Enter Name Of Item"/></View>
-            <View style={{padding:5}}><TextInput keyboardType='numeric' value={price} onChangeText={(val)=>setPrice(val)} placeholder="Enter Amount"/></View>
+            <View style={{padding:5}}><TextInput value={price} onChangeText={(val)=>setPrice(val)} placeholder="Enter Amount"/></View>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => setModalVisible(!modalVisible)}

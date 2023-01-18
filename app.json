@@ -24,16 +24,10 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      },
-      "package": "com.nikhilmhow.Expenss"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "8152dab4-f1ad-4a9c-a9a0-44460c87e3a2"
-      }
     }
   }
 }
