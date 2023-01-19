@@ -3,7 +3,7 @@ import React,{useState} from 'react'
 import { Entypo } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker'
 
-const Cal = ({val}) => {
+const Cal = ({val,keyfun}) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [open, setOpen] = useState(false);
   const [value1, setValue] = useState(null);
@@ -28,6 +28,7 @@ const Cal = ({val}) => {
 {label: '2023', value: '2023'}
   ]);
 
+  const[adddata,setData]=useState("");
    
     
   return (
@@ -55,7 +56,7 @@ const Cal = ({val}) => {
       setOpen={setOpen}
       setValue={setValue}
       setItems={setItems}
-      onChangeValue={(rec) => console.log(rec)}
+      onChangeValue={(rec) => setData(rec)}
     />
  
   <DropDownPicker style={{marginLeft:35}}
@@ -66,7 +67,7 @@ const Cal = ({val}) => {
       setOpen={setOpen1}
       setValue={setValue1}
       setItems={setItems1}
-      onChangeValue={(rec) => console.log(rec)}
+      onChangeValue={(rec1) => keyfun(adddata,rec1)}
     />
     </View>
 
