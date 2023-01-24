@@ -20,7 +20,7 @@ const Mod = (props) => {
          
     const genrater=()=> {return "id" + Math.random().toString(16).slice(2)}
     // console.log(genrater())
-    let data={"item":item,"price":price,"id":String(genrater()),"month":new Date().getMonthName()}
+    let data={"item":item,"price":price,"id":String(genrater()),"month":new Date().getMonthName(),"value":false}
     try {
      if(data.item===""||data.price===""){
       Alert.alert("please provide both Values")
@@ -49,10 +49,11 @@ const Mod = (props) => {
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Add Item</Text>
             <View style={{padding:5}}><TextInput value={item} onChangeText={(val)=>setItem(val)} placeholder="Enter Name Of Item"/></View>
-            <View style={{padding:5}}><TextInput value={price} onChangeText={(val)=>setPrice(val)} placeholder="Enter Amount"/></View>
+            <View style={{padding:5}}><TextInput value={price} keyboardType="number-pad" onChangeText={(val)=>setPrice(val)} placeholder="Enter Amount"/></View>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => setModalVisible(!modalVisible)}
+
             >
               <Text style={styles.textStyle}>Back</Text>
             </Pressable>

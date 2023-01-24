@@ -6,32 +6,95 @@ import Mod from "./Modal";
 import Budjet from "./budjet";
 import { MaterialIcons } from '@expo/vector-icons';
 import Cal from "./Cal"
+import Checkbox from 'expo-checkbox';
+//delete log genration
+
+Date.prototype.getMonthName = function() {
+  var monthNames = [ "January", "February", "March", "April", "May", "June", 
+                     "July", "August", "September", "October", "November", "December" ];
+  return monthNames[this.getMonth()];
+}
 
 export default function App() {
-
+  const [keys,keyset]=useState(`${new Date().getMonthName()}${new Date().getFullYear()}`)
+  const [month,setmonth]=useState(new Date().getMonthName())
   const [Ddata,Setddata]=useState([])//isko set karo d data main
+  const [DlData,Setdldata]=useState([])
   const [Total,SetTotal]=useState(0)
   const [budget,setBudget]=useState(0)
-  const [month,setmonth]=useState("Waiting")
+  const [premon,setpremon]=useState("")
+
+  const [isChecked, setChecked] = useState(false);
 
   // const [Color,setColor]=useState("green")
 
-  const [Color,setColor]=useState("green")
+  async function checkvalue(itemrc){
+
+  }
 
   useEffect(() => {
+    //this function must be run on initial Loading special Ddata update
      storagesave()
      totalSet()
      cal()
      updatepriBudget()
-    
-     colorchange()
-    // ToastAndroid.showWithGravity("useeffect run", ToastAndroid.SHORT,ToastAndroid.CENTER)
-
+     lastdelete()
   }, [Ddata])
 
+  //
+  useEffect(()=>totalSet(),//total update on Keyfun 
+   [keyfun])
+
   
-const keyfun=(val1,val2)=>{
-  console.log(val1,val2)
+const keyfun= async(val1,val2)=>{
+   keyset(`${val1}${val2}`)
+  const preconvert1=JSON.parse(await AsyncStorage.getItem(`${val1}${val2}`))
+  Setddata(preconvert1)
+  totalSet()
+  setpremon(val1)
+  
+ 
+}
+
+const  checkItemById = async (id,itm,prc,mnth,vel) => {
+
+  const dataa={"item":itm,"price":prc,"id":id,"month":mnth,"value":!vel}
+
+  const filteredData = Ddata.filter(item => item.id !== id);
+ // Setddata({ Ddata: filteredData });
+ Setddata(filteredData)
+ if(Ddata.length > 1){
+
+ storagesave()
+}else{
+
+ await AsyncStorage.setItem(keys,"[]")
+ }
+
+  Setddata([...filteredData,dataa])
+
+  
+  storagesave()
+ 
+
+}
+
+async function Deletedata(keyss,database){
+  let convert =JSON.stringify(Ddata)
+
+    if(convert==="[]" ||convert===""){
+        // await AsyncStorage.setItem('@storage_Key',"[]")
+      //await AsyncStorage.removeItem('@storage_Key')
+   
+    }else{await AsyncStorage.setItem("@Deletelog",convert)
+
+  }
+
+}
+
+async function lastdelete(){
+  
+  console.log(await AsyncStorage.getItem("@Deletelog"))
 }
 
   const createAlert = (func,ale,msg) =>
@@ -52,13 +115,13 @@ const keyfun=(val1,val2)=>{
   SetTotal(value)
   }
 
-  const colorchange=()=>{
-    console.log("color",Total,budget)
-    if(Total>=budget){
-      console.log("ye nahi chalna chaiye")
-      setColor("red")
-    }
-  }
+  // const colorchange=()=>{
+  //   console.log("color",Total,budget)
+  //   if(Total>=budget){
+  //     console.log("ye nahi chalna chaiye")
+  //     setColor("red")
+  //   }
+  // }
 
   async function updatepriBudget(){
     try {
@@ -67,7 +130,7 @@ const keyfun=(val1,val2)=>{
       setBudget(JSON.parse(val))
     }
     } catch (error) {
-      console.log("nahi load budget")
+   
     }
   
   }
@@ -75,14 +138,14 @@ const keyfun=(val1,val2)=>{
   const cen =async (recive)=>{
     if(recive){ 
       }
-      console.log(recive)
+      setBudget(recive)
       await AsyncStorage.setItem('@storagebudget',JSON.stringify(recive))
-      console.warn("Success Storage")
+      
 }
 
   const  deleteItemById = async (id) => {
 
-    console.log(id)
+    
    const filteredData = Ddata.filter(item => item.id !== id);
   // Setddata({ Ddata: filteredData });
   Setddata(filteredData)
@@ -90,8 +153,8 @@ const keyfun=(val1,val2)=>{
     console.log("ye part chala storage wala",Ddata.length )
   storagesave()
 }else{
-  console.log("niche wala part chala storage wala" )
-  await AsyncStorage.setItem('@storage_Key',"[]")
+ 
+  await AsyncStorage.setItem(keys,"[]")
   }
 }
   
@@ -107,14 +170,15 @@ const keyfun=(val1,val2)=>{
   async function storagesave(){ 
     let convert =JSON.stringify(Ddata)
 
-    console.log(typeof(convert))
+   
     if(convert==="[]" ||convert===""){
-      console.log("ye chala",convert)
+   
       // await AsyncStorage.setItem('@storage_Key',"[]")
       //await AsyncStorage.removeItem('@storage_Key')
    
-    }else{await AsyncStorage.setItem('@storage_Key',convert)
-    console.log("storage done")}
+    }else{await AsyncStorage.setItem(keys,convert)
+    
+  }
 
   }
 
@@ -129,17 +193,16 @@ try {
 
 }
 
-  const center =async (recive)=>{
+  const center =async (recive)=>{ 
     if(recive){ 
     Setddata([...Ddata,recive])
 
-    console.log(findtotal(Ddata))
-    console.log("ye update aya",recive)
     storagesave()
   
   }else{ 
-    const preconvert=JSON.parse(await AsyncStorage.getItem('@storage_Key'))
-     console.log(findtotal(preconvert))
+    console.log("key ayi",keys)
+    const preconvert=JSON.parse(await AsyncStorage.getItem(keys))
+
       Setddata(preconvert)
   }
    
@@ -160,14 +223,14 @@ try {
     <FlatList 
         data={Ddata}
         renderItem={({ item }) => <View  style={{flexDirection:"row",justifyContent:"space-between",backgroundColor:"yellow",marginVertical:3, borderRadius:15}}>
-        <View style={{padding:2}}><Text onPress={()=>createAlert(() => deleteItemById(item.id),"Delete Item","Sure want to remove item")} style={styles.item}>{item.item}</Text></View>
+        <View style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}><Checkbox style={{justifyContent:"center",alignItems:"center",marginHorizontal:8}} value={item.value} onValueChange={(items)=>checkItemById(item.id,item.item,item.price,item.month,item.value)} /><View style={{padding:2}}><Text onPress={()=>createAlert(() => deleteItemById(item.id),"Delete Item","Sure want to remove item")} style={styles.item}>{item.item}</Text></View></View>
         <View style={{marginHorizontal:2}}><Text style={styles.item}>{item.price}</Text></View></View>}
         keyExtractor={(item) => item.id}/>
       <View style={{alignItems:"center",flexDirection:"row",justifyContent:"center",backgroundColor:"rgba(0, 0, 0, 0.23)",borderRadius:10,marginVertical:5}}>
-      <View style={{marginHorizontal:5,}}><Text style={{fontSize:25}}>Total</Text></View><View><Text style={{fontSize:28,color:"green"}}>{Total}</Text></View></View>
+      <View style={{marginHorizontal:5,}}><Text style={{fontSize:23,color:"green"}}>Total</Text></View><View><Text style={{fontSize:25,color:"green"}}>{Total}</Text></View><View style={{backgroundColor:"black",padding:2,borderRadius:5,margin:2,justifyContent:"center",alignItems:"center"}}><Text style={{fontSize:25,color:"yellow"}}>{premon}</Text></View></View>
       <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-evenly"}}>
 
-      <TouchableOpacity  onPress={()=>createAlert(async()=>{AsyncStorage.removeItem('@storage_Key'), Setddata("")},"Remove All Item","Delete Permanently")}><View style={{flexDirection:"row",backgroundColor:"orange",borderRadius:5}}>
+      <TouchableOpacity  onPress={()=>createAlert(async()=>{Deletedata(),AsyncStorage.removeItem(), Setddata("")},"Remove All Item","Delete Permanently")}><View style={{flexDirection:"row",backgroundColor:"orange",borderRadius:5}}>
       <MaterialIcons name="delete-outline" size={35} color="white"/><Text style={{paddingRight:5, paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>Clear All</Text></View></TouchableOpacity>
 
       <Cal val={month} keyfun={keyfun}/> 

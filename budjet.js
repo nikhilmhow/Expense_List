@@ -29,7 +29,7 @@ const Budjet = ({cen,val,col}) => {
             </Pressable>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={()=>cen(budget)}
+              onPress={()=>{cen(budget),setModalVisible(!modalVisible)}}
             >
               <Text style={styles.textStyle}>Add</Text>
             </Pressable>
@@ -39,7 +39,8 @@ const Budjet = ({cen,val,col}) => {
       <Pressable
         // style={[styles.button, styles.buttonOpen]}
         onPress={() => setModalVisible(true)}>
-        <Text style={{ paddingVertical:1,backgroundColor:"grey", paddingHorizontal:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}><AntDesign name="wallet" size={18} color="white" /> {val}</Text>
+        <Text style={{ paddingVertical:1,backgroundColor:"grey", paddingHorizontal:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>
+        <AntDesign name="wallet" size={18} color="white" /> {val}</Text>
       </Pressable>
     </View>
   )

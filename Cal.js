@@ -2,10 +2,12 @@ import { Alert, Modal, StyleSheet, Text, Pressable, View,TextInput } from "react
 import React,{useState} from 'react'
 import { Entypo } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker'
+// delete log genration
 
 const Cal = ({val,keyfun}) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [open, setOpen] = useState(false);
+    const [mont,setmonth]=useState(val)
   const [value1, setValue] = useState(null);
   const [items, setItems] = useState([
     {label: 'January', value: 'January'},
@@ -29,6 +31,7 @@ const Cal = ({val,keyfun}) => {
   ]);
 
   const[adddata,setData]=useState("");
+  const[bdata,setbData]=useState("");
    
     
   return (
@@ -67,17 +70,24 @@ const Cal = ({val,keyfun}) => {
       setOpen={setOpen1}
       setValue={setValue1}
       setItems={setItems1}
-      onChangeValue={(rec1) => keyfun(adddata,rec1)}
+      onChangeValue={(rec1) => setbData(rec1) 
+      }
     />
     </View>
-
+    <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => {keyfun(adddata,bdata), setModalVisible(!modalVisible),setmonth(`${bdata}`)}}
+            >
+              <Text style={styles.textStyle}>Open</Text>
+            </Pressable>
         
         </View>
       </Modal>
       <Pressable
         // style={[styles.button, styles.buttonOpen]}
         onPress={() => setModalVisible(true)}>
-        <Text style={{ paddingVertical:1, paddingHorizontal:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}><Entypo name="calendar" size={18} color="white"/> {val}</Text>
+        <Text style={{ paddingVertical:1, paddingHorizontal:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}><Entypo name="calendar" size={18} color="white"/> 
+        {mont}</Text>
       </Pressable>
     </View>
   )
@@ -87,7 +97,6 @@ const styles = StyleSheet.create({
     centeredView: {
       flex: 1,
       justifyContent: "center",
-     
       marginTop: 22
     },
     modalView: {
