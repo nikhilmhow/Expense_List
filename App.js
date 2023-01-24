@@ -24,13 +24,6 @@ export default function App() {
   const [budget,setBudget]=useState(0)
   const [premon,setpremon]=useState("")
 
-  const [isChecked, setChecked] = useState(false);
-
-  // const [Color,setColor]=useState("green")
-
-  async function checkvalue(itemrc){
-
-  }
 
   useEffect(() => {
     //this function must be run on initial Loading special Ddata update
@@ -47,13 +40,14 @@ export default function App() {
 
   
 const keyfun= async(val1,val2)=>{
-   keyset(`${val1}${val2}`)
+
+  if(val1==undefined){
+    console.log("not recive key")
+  }else{   keyset(`${val1}${val2}`)
   const preconvert1=JSON.parse(await AsyncStorage.getItem(`${val1}${val2}`))
   Setddata(preconvert1)
   totalSet()
-  setpremon(val1)
-  
- 
+  setpremon(val1)}
 }
 
 const  checkItemById = async (id,itm,prc,mnth,vel) => {
@@ -108,11 +102,19 @@ async function lastdelete(){
   ]);
 
   const totalSet=()=>{
+    try {
     let value = 0
-    for (let i = 0; i < Ddata.length; i++) {
+    const lnt=Ddata.length===null ? 0:Ddata.length
+    console.log(typeof(Ddata.length),Ddata.length, "ye set karna hai")
+    for (let i = 0; i < lnt; i++) {
       value += Number(Ddata[i].price)
     }
+
   SetTotal(value)
+  } catch (error) {
+    ToastAndroid.show('Request Was Unsuccessfully!', ToastAndroid.SHORT);
+  }
+    
   }
 
   // const colorchange=()=>{
