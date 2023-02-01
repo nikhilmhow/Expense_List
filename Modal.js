@@ -3,7 +3,7 @@ import { Alert, Modal, StyleSheet, Text, Pressable, View,TextInput } from "react
 
 
 
-const Mod = (props) => {
+const Mod = ({center}) => {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [item,setItem]=useState("")
@@ -25,7 +25,7 @@ const Mod = (props) => {
      if(data.item===""||data.price===""){
       Alert.alert("please provide both Values")
      }else{
-      props.center(data)
+      center(data)
      }
       } catch (e) {
         console.log(e)

@@ -7,6 +7,7 @@ import Budjet from "./budjet";
 import { MaterialIcons } from '@expo/vector-icons';
 import Cal from "./Cal"
 import Checkbox from 'expo-checkbox';
+import Delete from "./Delete";
 //delete log genration
 
 Date.prototype.getMonthName = function() {
@@ -31,14 +32,18 @@ export default function App() {
      totalSet()
      cal()
      updatepriBudget()
-     lastdelete()
+     console.log(keys, "ye")
+     
   }, [Ddata])
 
   //
   useEffect(()=>totalSet(),//total update on Keyfun 
    [keyfun])
 
-  
+   useEffect(() => {
+    center()
+    lastdelete()
+   },[]);
 const keyfun= async(val1,val2)=>{
 
   if(val1==undefined){
@@ -75,6 +80,7 @@ const  checkItemById = async (id,itm,prc,mnth,vel) => {
 
 async function Deletedata(keyss,database){
   let convert =JSON.stringify(Ddata)
+  Setdldata(Ddata)
 
     if(convert==="[]" ||convert===""){
         // await AsyncStorage.setItem('@storage_Key',"[]")
@@ -87,7 +93,7 @@ async function Deletedata(keyss,database){
 }
 
 async function lastdelete(){
-  
+  Setdldata(JSON.parse( await AsyncStorage.getItem("@Deletelog")))
   console.log(await AsyncStorage.getItem("@Deletelog"))
 }
 
@@ -117,13 +123,6 @@ async function lastdelete(){
     
   }
 
-  // const colorchange=()=>{
-  //   console.log("color",Total,budget)
-  //   if(Total>=budget){
-  //     console.log("ye nahi chalna chaiye")
-  //     setColor("red")
-  //   }
-  // }
 
   async function updatepriBudget(){
     try {
@@ -196,10 +195,20 @@ try {
 }
 
   const center =async (recive)=>{ 
+    console.log("ye recive yaa add",recive)
     if(recive){ 
-    Setddata([...Ddata,recive])
-
+      if(typeof(Ddata)==null || Ddata==undefined){
+        Setddata([recive])// data null ho ja raha hai
+    console.log(typeof(recive),"ye type aya")
+      
     storagesave()
+      }else{
+        Setddata([...Ddata,recive])// data null ho ja raha hai
+        console.log(typeof(recive),"ye type aya")
+          
+        storagesave()
+      }
+    
   
   }else{ 
     console.log("key ayi",keys)
@@ -209,9 +218,7 @@ try {
   }
    
   }
-   useEffect(() => {
-    center()
-   },[]);
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -219,8 +226,8 @@ try {
         animated={true}
         backgroundColor="#61dafb"
       />
-    <View style={{width:"80%",height:"10%",alignSelf:"center",flexDirection:"row"}}>
-    <Mod center={center}/>
+    <View style={{width:"80%",height:"10%",alignSelf:"center",flexDirection:"row",justifyContent:"center",marginLeft:"10%"}}>
+    <Mod center={center}/><View style={{justifyContent:"center"}}><Delete val={DlData}/></View>
     </View>
     <FlatList 
         data={Ddata}
@@ -229,7 +236,7 @@ try {
         <View style={{marginHorizontal:2}}><Text style={styles.item}>{item.price}</Text></View></View>}
         keyExtractor={(item) => item.id}/>
       <View style={{alignItems:"center",flexDirection:"row",justifyContent:"center",backgroundColor:"rgba(0, 0, 0, 0.23)",borderRadius:10,marginVertical:5}}>
-      <View style={{marginHorizontal:5,}}><Text style={{fontSize:23,color:"green"}}>Total</Text></View><View><Text style={{fontSize:25,color:"green"}}>{Total}</Text></View><View style={{backgroundColor:"black",padding:2,borderRadius:5,margin:2,justifyContent:"center",alignItems:"center"}}><Text style={{fontSize:25,color:"yellow"}}>{premon}</Text></View></View>
+      <View style={{marginHorizontal:5,alignItems:"flex-end"}}><Text style={{fontSize:23,color:"green"}}>Total</Text></View><View><Text style={{fontSize:25,color:"green"}}>{Total}</Text></View><View style={{backgroundColor:"black",padding:2,borderRadius:5,margin:2,justifyContent:"center",alignItems:"flex-end",alignSelf:"flex-end"}}><Text style={{fontSize:25,color:"yellow"}}>{premon}</Text></View></View>
       <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-evenly"}}>
 
       <TouchableOpacity  onPress={()=>createAlert(async()=>{Deletedata(),AsyncStorage.removeItem(), Setddata("")},"Remove All Item","Delete Permanently")}><View style={{flexDirection:"row",backgroundColor:"orange",borderRadius:5}}>
