@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState,useEffect } from "react";
-
-import { SafeAreaView, FlatList, StyleSheet, Text, View, TouchableOpacity,StatusBar,ToastAndroid,Alert } from "react-native";
+import DialogInput from 'react-native-dialog-input'
+import { SafeAreaView, FlatList,Pressable,TextInput, StyleSheet, Text, View, TouchableOpacity,StatusBar,ToastAndroid,Alert,Modal } from "react-native";
 import Mod from "./Modal";
 import Budjet from "./budjet";
 import { MaterialIcons } from '@expo/vector-icons';
@@ -24,6 +24,9 @@ export default function App() {
   const [Total,SetTotal]=useState(0)
   const [budget,setBudget]=useState(0)
   const [premon,setpremon]=useState("")
+  const [modalVisible, setModalVisible] = useState(false);
+  const [priceUpdater,SPrice]=useState(0);
+  var applyed=0;
 
 
   useEffect(() => {
@@ -55,6 +58,11 @@ const keyfun= async(val1,val2)=>{
   setpremon(val1)}
 }
 
+function newPrice(){
+  setModalVisible(true)
+  return applyed
+}
+
 const  checkItemById = async (id,itm,prc,mnth,vel) => {
 
   const dataa={"item":itm,"price":prc,"id":id,"month":mnth,"value":!vel}
@@ -72,8 +80,30 @@ const  checkItemById = async (id,itm,prc,mnth,vel) => {
 
   Setddata([...filteredData,dataa])
 
-  
   storagesave()
+
+}
+// item price update
+const  priceItemById = async (id,itm,prc,mnth,vel) => {/// yanha model bhi ayega
+
+   //eweruiweuriuiweruieueiwruieuieruierwuieruieruieuieuiweruiweuiewuirueri
+   const dataa={"item":itm,"price":newPrice(),"id":id,"month":mnth,"value":vel}
+
+   const filteredData = Ddata.filter(item => item.id !== id);
+//  // Setddata({ Ddata: filteredData });
+  Setddata(filteredData)
+ if(Ddata.length > 1){
+
+ storagesave()
+ }else{
+
+  await AsyncStorage.setItem(keys,"[]")
+ }
+
+   Setddata([...filteredData,dataa])
+
+  
+   storagesave()
  
 
 }
@@ -232,11 +262,21 @@ try {
     <FlatList 
         data={Ddata}
         renderItem={({ item }) => <View  style={{flexDirection:"row",justifyContent:"space-between",backgroundColor:"yellow",marginVertical:3, borderRadius:15}}>
-        <View style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}><Checkbox style={{justifyContent:"center",alignItems:"center",marginHorizontal:8}} value={item.value} onValueChange={(items)=>checkItemById(item.id,item.item,item.price,item.month,item.value)} /><View style={{padding:2}}><Text onPress={()=>createAlert(() => deleteItemById(item.id),"Delete Item","Sure want to remove item")} style={styles.item}>{item.item}</Text></View></View>
-        <View style={{marginHorizontal:2}}><Text style={styles.item}>{item.price}</Text></View></View>}
+        <View style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
+        <Checkbox style={{justifyContent:"center",alignItems:"center",marginHorizontal:8}} value={item.value} 
+        onValueChange={()=>checkItemById(item.id,item.item,item.price,item.month,item.value)} />
+        <View style={{padding:2}}><Text onPress={()=>createAlert(() => deleteItemById(item.id),"Delete Item","Sure want to remove item")} style={styles.item}>{item.item}</Text></View></View>
+        <View style={{marginHorizontal:2}}><TouchableOpacity onPress={(items)=>priceItemById(item.id,item.item,item.price,item.month,item.value)}><Text style={styles.item}>{item.price}</Text></TouchableOpacity></View></View>}
         keyExtractor={(item) => item.id}/>
       <View style={{alignItems:"center",flexDirection:"row",justifyContent:"center",backgroundColor:"rgba(0, 0, 0, 0.23)",borderRadius:10,marginVertical:5}}>
-      <View style={{marginHorizontal:5,alignItems:"flex-end"}}><Text style={{fontSize:23,color:"green"}}>Total</Text></View><View><Text style={{fontSize:25,color:"green"}}>{Total}</Text></View><View style={{backgroundColor:"black",padding:2,borderRadius:5,margin:2,justifyContent:"center",alignItems:"flex-end",alignSelf:"flex-end"}}><Text style={{fontSize:25,color:"yellow"}}>{premon}</Text></View></View>
+     
+      <View style={{alignSelf:"center",flexDirection:"row",justifyContent:"center"}}>
+<View style={{flexDirection:"row-reverse",justifyContent:"space-between",}}><Text style={{fontSize:23,color:"green"}}>Total</Text>
+<Text style={{fontSize:25,color:"green",paddingRight:5}}>{Total}</Text></View><View style={{justifyContent:"flex-end",marginLeft:5}}>
+<Text style={{fontSize:25,color:"blue"}}>{premon}</Text></View>
+</View>
+      
+      </View>
       <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-evenly"}}>
 
       <TouchableOpacity  onPress={()=>createAlert(async()=>{Deletedata(),AsyncStorage.removeItem(), Setddata("")},"Remove All Item","Delete Permanently")}><View style={{flexDirection:"row",backgroundColor:"orange",borderRadius:5}}>
@@ -251,6 +291,13 @@ try {
       <Budjet cen={cen} col={Total>budget?"red":"green"} val={budget}/>
       {/* <TouchableOpacity onPress={async()=>{AsyncStorage.removeItem('@storage_Key'), Setddata("")}}><View style={{padding:4,backgroundColor:Total>budget?"red":"green",borderRadius:8}}><Text>Budget {budget}</Text></View></TouchableOpacity> */}
       </View>
+      <DialogInput isDialogVisible={modalVisible}
+            title={"Enter Updated Price"}
+            message={"Message for DialogInput #1"}
+            hintInput ={"HINT INPUT"}
+            submitInput={ (inputText) => {applyed=inputText} }
+            closeDialog={ () => {setModalVisible(false)}}>
+</DialogInput>
     </SafeAreaView>
   );
 }
@@ -267,5 +314,47 @@ const styles = StyleSheet.create({
     borderWidth:1,
     backgroundColor:"#f5f5f5",
     borderRadius:20
-  }
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+
 });

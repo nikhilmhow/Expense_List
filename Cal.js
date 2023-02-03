@@ -86,7 +86,7 @@ const Cal = ({val,keyfun}) => {
       <Pressable
         // style={[styles.button, styles.buttonOpen]}
         onPress={() => setModalVisible(true)}>
-        <Text style={{ paddingVertical:1, paddingHorizontal:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}><Entypo name="calendar" size={18} color="white"/> 
+        <Text style={{ paddingVertical:1, paddingHorizontal:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}><Entypo style={{marginRight:2}} name="calendar" size={18} color="white"/> 
         {mont}</Text>
       </Pressable>
     </View>
