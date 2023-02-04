@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Alert, Modal, StyleSheet, Text, Pressable, View,TextInput } from "react-native";
-
+import {Card} from 'react-native-shadow-cards';
 
 
 const Mod = ({center}) => {
@@ -104,7 +104,9 @@ const styles = StyleSheet.create({
     elevation: 1
   },
   buttonOpen: {
-    backgroundColor: "#F194FF",
+    backgroundColor: "rgba(61, 123, 199, 0.58)",
+    borderColor:"#fff",
+    borderWidth:2
   },
   buttonClose: {
     backgroundColor: "#2196F3",

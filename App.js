@@ -7,7 +7,9 @@ import Budjet from "./budjet";
 import { MaterialIcons } from '@expo/vector-icons';
 import Cal from "./Cal"
 import Checkbox from 'expo-checkbox';
+import {Card} from 'react-native-shadow-cards';
 import Delete from "./Delete";
+import {LinearGradient} from 'expo-linear-gradient';
 //delete log genration
 
 Date.prototype.getMonthName = function() {
@@ -57,11 +59,18 @@ const keyfun= async(val1,val2)=>{
   totalSet()
   setpremon(val1)}
 }
+let bad=(r)=>{console.log(r)}
+function* newPrice(i){
 
-function newPrice(){
-  setModalVisible(true)
-  return applyed
+  yield setModalVisible(true)
+  yield bad(applyed)
+  
+
 }
+
+let sg=newPrice();
+
+
 
 const  checkItemById = async (id,itm,prc,mnth,vel) => {
 
@@ -87,7 +96,7 @@ const  checkItemById = async (id,itm,prc,mnth,vel) => {
 const  priceItemById = async (id,itm,prc,mnth,vel) => {/// yanha model bhi ayega
 
    //eweruiweuriuiweruieueiwruieuieruierwuieruieruieuieuiweruiweuiewuirueri
-   const dataa={"item":itm,"price":newPrice(),"id":id,"month":mnth,"value":vel}
+   const dataa={"item":itm,"price":prc,"id":id,"month":mnth,"value":vel}
 
    const filteredData = Ddata.filter(item => item.id !== id);
 //  // Setddata({ Ddata: filteredData });
@@ -251,36 +260,41 @@ try {
   
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{flex:1}}>
+   <LinearGradient
+        // Button Linear Gradient
+        colors={['#4c669f', '#3b5998', '#192f6a']}
+        style={styles.container}>
      <StatusBar
         animated={true}
-        backgroundColor="#61dafb"
+        backgroundColor="black"
       />
     <View style={{width:"80%",height:"10%",alignSelf:"center",flexDirection:"row",justifyContent:"center",marginLeft:"10%"}}>
+    
     <Mod center={center}/><View style={{justifyContent:"center"}}><Delete val={DlData}/></View>
     </View>
     <FlatList 
         data={Ddata}
-        renderItem={({ item }) => <View  style={{flexDirection:"row",justifyContent:"space-between",backgroundColor:"yellow",marginVertical:3, borderRadius:15}}>
+        renderItem={({ item }) => <Card  style={{flexDirection:"row", backgroundColor:"rgba(212, 233, 53, 0.68)", justifyContent:"space-between",marginVertical:3, borderRadius:15,alignSelf:"center"}}>
         <View style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
         <Checkbox style={{justifyContent:"center",alignItems:"center",marginHorizontal:8}} value={item.value} 
         onValueChange={()=>checkItemById(item.id,item.item,item.price,item.month,item.value)} />
         <View style={{padding:2}}><Text onPress={()=>createAlert(() => deleteItemById(item.id),"Delete Item","Sure want to remove item")} style={styles.item}>{item.item}</Text></View></View>
-        <View style={{marginHorizontal:2}}><TouchableOpacity onPress={(items)=>priceItemById(item.id,item.item,item.price,item.month,item.value)}><Text style={styles.item}>{item.price}</Text></TouchableOpacity></View></View>}
+        <View style={{marginHorizontal:2}}><TouchableOpacity onPress={(items)=>sg.next()}><Text style={styles.item}>{item.price}</Text></TouchableOpacity></View></Card>}///
         keyExtractor={(item) => item.id}/>
       <View style={{alignItems:"center",flexDirection:"row",justifyContent:"center",backgroundColor:"rgba(0, 0, 0, 0.23)",borderRadius:10,marginVertical:5}}>
      
-      <View style={{alignSelf:"center",flexDirection:"row",justifyContent:"center"}}>
-<View style={{flexDirection:"row-reverse",justifyContent:"space-between",}}><Text style={{fontSize:23,color:"green"}}>Total</Text>
-<Text style={{fontSize:25,color:"green",paddingRight:5}}>{Total}</Text></View><View style={{justifyContent:"flex-end",marginLeft:5}}>
-<Text style={{fontSize:25,color:"blue"}}>{premon}</Text></View>
-</View>
+      <Card style={{borderRadius:12,alignSelf:"center",flexDirection:"row",justifyContent:"center",backgroundColor:"rgba(92, 72, 100, 0.75)",flex:1}}>
+<View style={{flexDirection:"row-reverse",justifyContent:"space-between",}}><Text style={{fontSize:23,color:"#fff"}}>Total</Text>
+<Text style={{fontSize:25,color:"#fff",paddingRight:5}}>{Total}</Text></View><View style={{justifyContent:"flex-end",marginLeft:5}}>
+<Text style={{fontSize:25,color:"yellow"}}>{premon}</Text></View>
+</Card>
       
       </View>
       <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-evenly"}}>
 
-      <TouchableOpacity  onPress={()=>createAlert(async()=>{Deletedata(),AsyncStorage.removeItem(), Setddata("")},"Remove All Item","Delete Permanently")}><View style={{flexDirection:"row",backgroundColor:"orange",borderRadius:5}}>
-      <MaterialIcons name="delete-outline" size={35} color="white"/><Text style={{paddingRight:5, paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>Clear All</Text></View></TouchableOpacity>
+      <TouchableOpacity  onPress={()=>createAlert(async()=>{Deletedata(),AsyncStorage.removeItem(), Setddata("")},"Remove All Item","Delete Permanently")}><Card style={{width:"100%", flexDirection:"row",backgroundColor:"rgba(217, 189, 187, 0.69)",borderRadius:5}}>
+      <MaterialIcons name="delete-outline" size={35} color="white"/><Text style={{paddingRight:5, paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>Clear All</Text></Card></TouchableOpacity>
 
       <Cal val={month} keyfun={keyfun}/> 
       {/* <TouchableOpacity ><View style={{paddingHorizontal:5,backgroundColor:"grey",borderRadius:5}}><Text style={{ paddingHorizontal:5,paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>{month}</Text></View></TouchableOpacity> */}
@@ -295,9 +309,10 @@ try {
             title={"Enter Updated Price"}
             message={"Message for DialogInput #1"}
             hintInput ={"HINT INPUT"}
-            submitInput={ (inputText) => {applyed=inputText} }
-            closeDialog={ () => {setModalVisible(false)}}>
+            submitInput={ (inputText) => {applyed=inputText}}
+            closeDialog={ () => {sg.next(),setModalVisible(false)}}>
 </DialogInput>
+</LinearGradient>
     </SafeAreaView>
   );
 }
@@ -311,9 +326,12 @@ const styles = StyleSheet.create({
   item: {
     padding: 15,
     fontSize: 15,
-    borderWidth:1,
-    backgroundColor:"#f5f5f5",
-    borderRadius:20
+    elevation:1,
+    borderColor:"#fff",
+    borderWidth:2,
+    backgroundColor:"rgba(31, 87, 182, 0.68)",
+    borderRadius:20,
+    color:"#fff"
   },
   centeredView: {
     flex: 1,

@@ -35,7 +35,7 @@ const Cal = ({val,keyfun}) => {
    
     
   return (
-    <View style={{padding:4,borderRadius:8,borderRadius:5,backgroundColor:"grey",borderRadius:5}}>
+    <View style={{padding:4,borderRadius:8,borderRadius:5,backgroundColor:"rgba(217, 189, 187, 0.69)",borderRadius:5}}>
       <Modal
         animationType="slide"
         transparent={true}
