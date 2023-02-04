@@ -2,12 +2,12 @@
   "expo": {
     "name": "Expenss",
     "slug": "Expenss",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/ruppe.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/newSplash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
