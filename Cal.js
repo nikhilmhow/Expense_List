@@ -11,7 +11,7 @@ const Cal = ({val,keyfun}) => {
   const [value1, setValue] = useState(null);
   const [items, setItems] = useState([
     {label: 'January', value: 'January'},
-    {label: 'Febuary', value: 'Febuary'},
+    {label: 'Febuary', value: 'February'},
     {label: 'March', value: 'March'},
     {label: 'April', value: 'April'},
     {label: 'May', value: 'May'},
@@ -21,8 +21,11 @@ const Cal = ({val,keyfun}) => {
     {label: 'September', value: 'September'},
     {label: 'October', value: 'October'},
     {label: 'November', value: 'November'},
-    {label: 'December', value: 'December/'},
+    {label: 'December', value: 'December'},
   ]);
+
+
+
   const [open1, setOpen1] = useState(false);
   const [value11, setValue1] = useState(null);
   const [items1, setItems1] = useState([
@@ -76,12 +79,11 @@ const Cal = ({val,keyfun}) => {
     </View>
     <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => {keyfun(adddata,bdata), setModalVisible(!modalVisible),setmonth(`${bdata}`)}}
-            >
+              onPress={() => {keyfun(adddata,bdata), setModalVisible(!modalVisible),setmonth(`${bdata}`)}}>
               <Text style={styles.textStyle}>Open</Text>
             </Pressable>
-        
         </View>
+        
       </Modal>
       <Pressable
         // style={[styles.button, styles.buttonOpen]}

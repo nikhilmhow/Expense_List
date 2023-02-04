@@ -17,9 +17,10 @@ Date.prototype.getMonthName = function() {
                      "July", "August", "September", "October", "November", "December" ];
   return monthNames[this.getMonth()];
 }
-
+var ddt=String(`${new Date().getMonthName()}${new Date().getFullYear()}`)
+// console.log("type of check",ddt==="Febuary2023",typeof(ddt),typeof("Febuary2023"),ddt,"Febuary2023")
 export default function App() {
-  const [keys,keyset]=useState(`${new Date().getMonthName()}${new Date().getFullYear()}`)
+  const [keys,keyset]=useState(ddt)// yanha se pronlem orginate ho rahi hai
   const [month,setmonth]=useState(new Date().getMonthName())
   const [Ddata,Setddata]=useState([])//isko set karo d data main
   const [DlData,Setdldata]=useState([])
@@ -37,7 +38,7 @@ export default function App() {
      totalSet()
      cal()
      updatepriBudget()
-     console.log(keys, "ye")
+     console.log(keys, "ye key genrate ho rahi use effect se")
      
   }, [Ddata])
 
@@ -47,15 +48,18 @@ export default function App() {
    [keyfun])
 
    useEffect(() => {
+    console.log(keys,"ye use start main ayi")
     center()
     lastdelete()
    },[]);
-const keyfun= async(val1,val2)=>{
 
+const keyfun= async(val1,val2)=>{
+console.log("ye cak ki update pe key ayi",`${val1}${val2}`)
   if(val1==undefined){
-    console.log("not recive key")
-  }else{   keyset(`${val1}${val2}`)
-  const preconvert1=JSON.parse(await AsyncStorage.getItem(`${val1}${val2}`))
+    console.log("not recive key")//agar nahi key tou
+  }else{   
+    keyset(String(`${val1}${val2}`))
+  const preconvert1=JSON.parse(await AsyncStorage.getItem(String(`${val1}${val2}`)))
   Setddata(preconvert1)
 
   setpremon(val1)}
@@ -135,7 +139,7 @@ async function Deletedata(keyss,database){
 
 async function lastdelete(){
   Setdldata(JSON.parse( await AsyncStorage.getItem("@Deletelog")))
-  console.log(await AsyncStorage.getItem("@Deletelog"))
+  
 }
 
   const createAlert = (func,ale,msg) =>
@@ -152,7 +156,7 @@ async function lastdelete(){
     try {// yanha problem hai
     let value = 0
     const lnt=Ddata.length===null ? 0:Ddata.length
-    console.log(typeof(Ddata.length),Ddata.length, "ye set karna hai")
+    // console.log(typeof(Ddata.length),Ddata.length, "ye set karna hai")
     for (let i = 0; i < lnt; i++) {
       value += Number(Ddata[i].price)
 
@@ -163,7 +167,7 @@ async function lastdelete(){
     SetTotal(0)
     ToastAndroid.show('Request Was Unsuccessfully!', ToastAndroid.SHORT);
    
-    console.log("chala Cath main")
+  
   }
     
   }
@@ -196,7 +200,7 @@ async function lastdelete(){
   // Setddata({ Ddata: filteredData });
   Setddata(filteredData)
   if(Ddata.length > 1){
-    console.log("ye part chala storage wala",Ddata.length )
+    // console.log("ye part chala storage wala",Ddata.length )
   storagesave()
 }else{
  
@@ -222,7 +226,7 @@ async function lastdelete(){
       // await AsyncStorage.setItem('@storage_Key',"[]")
       //await AsyncStorage.removeItem('@storage_Key')
    
-    }else{await AsyncStorage.setItem(keys,convert)
+    }else{await AsyncStorage.setItem(keys,convert)///yanha kaunsi key ayiv fffffffffffffffffffffffffffffffff
     
   }
 
@@ -240,24 +244,25 @@ try {
 }
 
   const center =async (recive)=>{ 
-    console.log("ye recive yaa add",recive)
+    // console.log("ye recive yaa add",recive)
     if(recive){ 
       if(typeof(Ddata)==null || Ddata==undefined){
         Setddata([recive])// data null ho ja raha hai
-    console.log(typeof(recive),"ye type aya")
+    // console.log(typeof(recive),"ye type aya")
       
     storagesave()
       }else{
         Setddata([...Ddata,recive])// data null ho ja raha hai
-        console.log(typeof(recive),"ye type aya")
+        // console.log(typeof(recive),"ye type aya")
           
         storagesave()
       }
     
   
   }else{ 
-    console.log("key ayi",keys)
+    // console.log("key ayi",keys)
     const preconvert=JSON.parse(await AsyncStorage.getItem(keys))
+    console.log("ye key load hone per intisl",keys)
 
       Setddata(preconvert)
   }
