@@ -41,6 +41,7 @@ export default function App() {
      
   }, [Ddata])
 
+
   //
   useEffect(()=>totalSet(),//total update on Keyfun 
    [keyfun])
@@ -56,8 +57,9 @@ const keyfun= async(val1,val2)=>{
   }else{   keyset(`${val1}${val2}`)
   const preconvert1=JSON.parse(await AsyncStorage.getItem(`${val1}${val2}`))
   Setddata(preconvert1)
-  totalSet()
+
   setpremon(val1)}
+ // totalSet()
 }
 let bad=(r)=>{console.log(r)}
 function* newPrice(i){
@@ -147,17 +149,21 @@ async function lastdelete(){
   ]);
 
   const totalSet=()=>{
-    try {
+    try {// yanha problem hai
     let value = 0
     const lnt=Ddata.length===null ? 0:Ddata.length
     console.log(typeof(Ddata.length),Ddata.length, "ye set karna hai")
     for (let i = 0; i < lnt; i++) {
       value += Number(Ddata[i].price)
+
     }
 
   SetTotal(value)
   } catch (error) {
+    SetTotal(0)
     ToastAndroid.show('Request Was Unsuccessfully!', ToastAndroid.SHORT);
+   
+    console.log("chala Cath main")
   }
     
   }
