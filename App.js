@@ -27,9 +27,9 @@ export default function App() {
   const [Total,SetTotal]=useState(0)
   const [budget,setBudget]=useState(0)
   const [premon,setpremon]=useState("")
-  const [modalVisible, setModalVisible] = useState(false);
-  const [priceUpdater,SPrice]=useState(0);
-  var applyed=0;
+  const [modalVisible,setModalVisible] = useState(false);
+  const [modalId,setModalI] = useState([]);
+  var applyed=2;
 
 
   useEffect(() => {
@@ -65,17 +65,34 @@ console.log("ye cak ki update pe key ayi",`${val1}${val2}`)
   setpremon(val1)}
  // totalSet()
 }
-let bad=(r)=>{console.log(r)}
-function* newPrice(i){
-
-  yield setModalVisible(true)
-  yield bad(applyed)
-  
-
+function IdRetrive(a,b,c,d,e){
+  setModalI([{"id":a,"item":b,"price":c,"month":d,"value":e}])
+ // item.id,item.item,item.price,item.month,item.value
+  setModalVisible(true)
+   console.log(a,b,c,d,e)
 }
 
-let sg=newPrice();
 
+const  priceById = async (id,itm,prc,mnth,vel) => {
+
+  const dataa={"item":itm,"price":prc,"id":id,"month":mnth,"value":vel}
+
+  const filteredData = Ddata.filter(item => item.id !== id);
+ // Setddata({ Ddata: filteredData });
+ Setddata(filteredData)
+ if(Ddata.length > 1){
+
+ storagesave()
+}else{
+
+ await AsyncStorage.setItem(keys,"[]")
+ }
+
+  Setddata([...filteredData,dataa])
+
+  storagesave()
+
+}
 
 
 const  checkItemById = async (id,itm,prc,mnth,vel) => {
@@ -98,30 +115,7 @@ const  checkItemById = async (id,itm,prc,mnth,vel) => {
   storagesave()
 
 }
-// item price update
-const  priceItemById = async (id,itm,prc,mnth,vel) => {/// yanha model bhi ayega
 
-   //eweruiweuriuiweruieueiwruieuieruierwuieruieruieuieuiweruiweuiewuirueri
-   const dataa={"item":itm,"price":prc,"id":id,"month":mnth,"value":vel}
-
-   const filteredData = Ddata.filter(item => item.id !== id);
-//  // Setddata({ Ddata: filteredData });
-  Setddata(filteredData)
- if(Ddata.length > 1){
-
- storagesave()
- }else{
-
-  await AsyncStorage.setItem(keys,"[]")
- }
-
-   Setddata([...filteredData,dataa])
-
-  
-   storagesave()
- 
-
-}
 
 async function Deletedata(keyss,database){
   let convert =JSON.stringify(Ddata)
@@ -290,14 +284,15 @@ try {
         <View style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
         <Checkbox style={{justifyContent:"center",alignItems:"center",marginHorizontal:8}} value={item.value} 
         onValueChange={()=>checkItemById(item.id,item.item,item.price,item.month,item.value)} />
-        <View style={{padding:2}}><Text onPress={()=>createAlert(() => deleteItemById(item.id),"Delete Item","Sure want to remove item")} style={styles.item}>{item.item}</Text></View></View>
-        <View style={{marginHorizontal:2}}><TouchableOpacity onPress={(items)=>sg.next()}><Text style={styles.item}>{item.price}</Text></TouchableOpacity></View></Card>}///
+        <View style={{padding:2}}><Text onPress={()=>createAlert(() => deleteItemById(item.id),"Delete Item","Sure want to remove item")} style={[styles.item,{borderColor:item.value?"rgba(184, 229, 226, 1)":"#fff"}]}>{item.item}</Text></View></View>
+        <View style={{marginVertical:2,marginHorizontal:5}}><TouchableOpacity onPress={()=>IdRetrive(item.id,item.item,item.price,item.month,item.value)}><Text style={[styles.item,{borderColor:item.value?"rgba(184, 229, 226, 1)":"#fff"}]}>{item.price}</Text></TouchableOpacity></View></Card>}///
         keyExtractor={(item) => item.id}/>
       <View style={{alignItems:"center",flexDirection:"row",justifyContent:"center",backgroundColor:"rgba(0, 0, 0, 0.23)",borderRadius:10,marginVertical:5}}>
      
       <Card style={{borderRadius:12,alignSelf:"center",flexDirection:"row",justifyContent:"center",backgroundColor:"rgba(92, 72, 100, 0.75)",flex:1}}>
 <View style={{flexDirection:"row-reverse",justifyContent:"space-between",}}><Text style={{fontSize:23,color:"#fff"}}>Total</Text>
-<Text style={{fontSize:25,color:"#fff",paddingRight:5}}>{Total}</Text></View><View style={{justifyContent:"flex-end",marginLeft:5}}>
+<Text style={{fontSize:25,color:"#fff",paddingRight:5}}>{Total}</Text></View>
+<View style={{justifyContent:"flex-end",marginLeft:5}}>
 <Text style={{fontSize:25,color:"yellow"}}>{premon}</Text></View>
 </Card>
       
@@ -317,11 +312,11 @@ try {
       {/* <TouchableOpacity onPress={async()=>{AsyncStorage.removeItem('@storage_Key'), Setddata("")}}><View style={{padding:4,backgroundColor:Total>budget?"red":"green",borderRadius:8}}><Text>Budget {budget}</Text></View></TouchableOpacity> */}
       </View>
       <DialogInput isDialogVisible={modalVisible}
-            title={"Enter Updated Price"}
-            message={"Message for DialogInput #1"}
-            hintInput ={"HINT INPUT"}
-            submitInput={ (inputText) => {applyed=inputText}}
-            closeDialog={ () => {sg.next(),setModalVisible(false)}}>
+            title={"Enter Your Price"}
+            message={"Please enter"}
+            hintInput ={"1 2 3"}
+            submitInput={ (inputT) => {priceById(modalId[0].id,modalId[0].item,inputT,modalId[0].month,modalId[0].value),setModalVisible(false)}}
+            closeDialog={ () => {setModalVisible(false)}}>
 </DialogInput>
 </LinearGradient>
     </SafeAreaView>
@@ -337,7 +332,7 @@ const styles = StyleSheet.create({
   item: {
     padding: 15,
     fontSize: 15,
-    elevation:1,
+    elevation:0,
     borderColor:"#fff",
     borderWidth:2,
     backgroundColor:"rgba(31, 87, 182, 0.68)",
