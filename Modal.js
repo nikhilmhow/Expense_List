@@ -3,7 +3,7 @@ import { Alert, Modal, StyleSheet, Text, Pressable, View,TextInput } from "react
 import {Card} from 'react-native-shadow-cards';
 
 
-const Mod = ({center}) => {
+const Mod = ({center,saveFile}) => {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [item,setItem]=useState("")
@@ -68,7 +68,7 @@ const Mod = ({center}) => {
       </Modal>
       <Pressable
         style={[styles.button, styles.buttonOpen]}
-        onPress={() => setModalVisible(true)}
+        onPress={() => setModalVisible(true)} 
       >
         <Text style={styles.textStyle}>Add Expenss</Text>
       </Pressable>

@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState,useEffect } from "react";
 import DialogInput from 'react-native-dialog-input'
-import { SafeAreaView, FlatList,Pressable,TextInput, StyleSheet, Text, View, TouchableOpacity,StatusBar,ToastAndroid,Alert,Modal } from "react-native";
+import { SafeAreaView, FlatList,Pressable,TextInput,PermissionsAndroid, StyleSheet, Text, View, TouchableOpacity,StatusBar,ToastAndroid,Alert,Modal } from "react-native";
 import Mod from "./Modal";
 import Budjet from "./budjet";
 import { MaterialIcons } from '@expo/vector-icons';
@@ -9,8 +9,19 @@ import Cal from "./Cal"
 import Checkbox from 'expo-checkbox';
 import {Card} from 'react-native-shadow-cards';
 import Delete from "./Delete";
+import * as ImagePicker from "expo-image-picker";
 import {LinearGradient} from 'expo-linear-gradient';
+import * as Location from 'expo-location';
 //delete log genration
+import "./test.json"
+import * as Sharing from 'expo-sharing';
+// expo add expo-file-system expo-sharing docx
+import * as MediaLibrary from 'expo-media-library';
+import * as FileSystem from 'expo-file-system';
+import { Document, Packer, Paragraph, HeadingLevel, TextRun } from 'docx';
+
+//import * as Permissions from 'expo-permissions';
+//import { Constants, Permissions, ImagePicker } from 'expo';
 
 Date.prototype.getMonthName = function() {
   var monthNames = [ "January", "February", "March", "April", "May", "June", 
@@ -27,9 +38,10 @@ export default function App() {
   const [Total,SetTotal]=useState(0)
   const [budget,setBudget]=useState(0)
   const [premon,setpremon]=useState("")
+  const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
   const [modalVisible,setModalVisible] = useState(false);
   const [modalId,setModalI] = useState([]);
-  var applyed=2;
+
 
 
   useEffect(() => {
@@ -46,13 +58,19 @@ export default function App() {
   //
   useEffect(()=>totalSet(),//total update on Keyfun 
    [keyfun])
-
    useEffect(() => {
-    console.log(keys,"ye use start main ayi")
     center()
     lastdelete()
    },[]);
+   //
+   saveFile = async() => {
+    let filename = FileSystem.documentDirectory + `${keys}.json`;
+    FileSystem.writeAsStringAsync(filename, JSON.stringify(Ddata));
+    console.log("done")
+    Sharing.shareAsync(filename);
+  }
 
+//
 const keyfun= async(val1,val2)=>{
 console.log("ye cak ki update pe key ayi",`${val1}${val2}`)
   if(val1==undefined){
@@ -276,7 +294,7 @@ try {
       />
     <View style={{width:"80%",height:"10%",alignSelf:"center",flexDirection:"row",justifyContent:"center",marginLeft:"10%"}}>
     
-    <Mod center={center}/><View style={{justifyContent:"center"}}><Delete val={DlData}/></View>
+    <Mod saveFile={saveFile} center={center}/><View style={{justifyContent:"center"}}><Delete saveFile={saveFile} val={DlData}/></View>
     </View>
     <FlatList 
         data={Ddata}
@@ -284,16 +302,16 @@ try {
         <View style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
         <Checkbox style={{justifyContent:"center",alignItems:"center",marginHorizontal:8}} value={item.value} 
         onValueChange={()=>checkItemById(item.id,item.item,item.price,item.month,item.value)} />
-        <View style={{padding:2}}><Text onPress={()=>createAlert(() => deleteItemById(item.id),"Delete Item","Sure want to remove item")} style={[styles.item,{borderColor:item.value?"rgba(184, 229, 226, 1)":"#fff"}]}>{item.item}</Text></View></View>
-        <View style={{marginVertical:2,marginHorizontal:5}}><TouchableOpacity onPress={()=>IdRetrive(item.id,item.item,item.price,item.month,item.value)}><Text style={[styles.item,{borderColor:item.value?"rgba(184, 229, 226, 1)":"#fff"}]}>{item.price}</Text></TouchableOpacity></View></Card>}///
+        <View style={{padding:2}}><Text onPress={()=>createAlert(() => deleteItemById(item.id),"Delete Item","Sure want to remove item")} style={[styles.item,{borderColor:item.value?"rgba(184, 229, 226, 1)":"#fff",fontWeight:"bold"}]}>{item.item}</Text></View></View>
+        <View style={{marginVertical:2,marginHorizontal:5}}><TouchableOpacity  onPress={()=>IdRetrive(item.id,item.item,item.price,item.month,item.value)}><Text style={[styles.item,{borderColor:item.value?"rgba(184, 229, 226, 1)":"#fff",fontWeight:"bold"}]}>{item.price}</Text></TouchableOpacity></View></Card>}///
         keyExtractor={(item) => item.id}/>
       <View style={{alignItems:"center",flexDirection:"row",justifyContent:"center",backgroundColor:"rgba(0, 0, 0, 0.23)",borderRadius:10,marginVertical:5}}>
      
       <Card style={{borderRadius:12,alignSelf:"center",flexDirection:"row",justifyContent:"center",backgroundColor:"rgba(92, 72, 100, 0.75)",flex:1}}>
-<View style={{flexDirection:"row-reverse",justifyContent:"space-between",}}><Text style={{fontSize:23,color:"#fff"}}>Total</Text>
-<Text style={{fontSize:25,color:"#fff",paddingRight:5}}>{Total}</Text></View>
+<View style={{flexDirection:"row-reverse",justifyContent:"space-between",}}><Text style={{fontSize:23,color:"#fff",fontWeight:"bold",marginTop:2}}>Total</Text>
+<Text style={{fontSize:25,color:"#fff",paddingRight:5,fontWeight:"bold"}}>{Total}</Text></View>
 <View style={{justifyContent:"flex-end",marginLeft:5}}>
-<Text style={{fontSize:25,color:"yellow"}}>{premon}</Text></View>
+<Text style={{fontSize:25,color:"yellow",fontWeight:"bold"}}>{premon}</Text></View>
 </Card>
       
       </View>

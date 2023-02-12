@@ -4,7 +4,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import {Card} from 'react-native-shadow-cards';
 
 
-const Delete = ({val}) => {
+const Delete = ({val,saveFile}) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [DlData,Setdldata]=useState("")
 
@@ -32,7 +32,7 @@ const Delete = ({val}) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-          
+          <View style={{elevation:1,backgroundColor:"red",borderRadius:10,justifyContent:"center",alignItems:"center",marginBottom:5}}><Text style={{fontSize:22,marginVertical:10,color:"#fff",fontWeight:"bold"}}>Recently Deleted Items</Text></View>
            <FlatList 
         data={DlData}
           renderItem={({ item }) => <Card  style={{alignSelf:"center",padding:5,width:"70%",alignItems:"center",justifyContent:"center",flexDirection:"row",justifyContent:"space-between",backgroundColor:"yellow",marginVertical:3, borderRadius:15}}>
@@ -55,7 +55,7 @@ const Delete = ({val}) => {
       </Modal>
       <Pressable
         // style={[styles.button, styles.buttonOpen]}
-        onPress={() => setModalVisible(true)}>
+        onPress={() => setModalVisible(true)} onLongPress={() => saveFile()}>
         <FontAwesome5 name="grip-lines" size={20} color="#fff" />
       </Pressable>
     </View>
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
       fontSize:20
     },
     modalView: {
-      height:"40%",
+      height:"50%",
    
       alignSelf:"center",
       margin: 10,

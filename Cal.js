@@ -49,10 +49,10 @@ const Cal = ({val,keyfun}) => {
         }}
       >
         <View style={styles.centeredView}>
-        
-        <Text style={{textAlign:"center"}}>
+        <View style={{marginBottom:5,marginLeft:"10%",borderRadius:5, backgroundColor:"#4683ED",width:"80%",alignItems:"center",justifyContent:"center"}}>
+        <Text style={{textAlign:"center",color:"#fff",fontSize:20,fontWeight:"bold"}}>
         Select Year & Month
-      </Text>
+      </Text></View>
       <View style={{flexDirection:"row",paddingHorizontal:10,width:"80%",alignItems:"center",justifyContent:"center",margin:5}}>
       <DropDownPicker style={{marginLeft:30}}
       open={open}
@@ -65,7 +65,7 @@ const Cal = ({val,keyfun}) => {
       onChangeValue={(rec) => setData(rec)}
     />
  
-  <DropDownPicker style={{marginLeft:35}}
+  <DropDownPicker style={{marginLeft:30}}
       open={open1}
       value={value11}
       items={items1}
@@ -78,7 +78,7 @@ const Cal = ({val,keyfun}) => {
     />
     </View>
     <Pressable
-              style={[styles.button, styles.buttonClose]}
+              style={[styles.button, styles.buttonClose,{margin:5}]}
               onPress={() => {keyfun(adddata,bdata), setModalVisible(!modalVisible),setmonth(`${bdata}`)}}>
               <Text style={styles.textStyle}>Open</Text>
             </Pressable>
@@ -89,7 +89,7 @@ const Cal = ({val,keyfun}) => {
         // style={[styles.button, styles.buttonOpen]}
         onPress={() => setModalVisible(true)}>
         <Text style={{ paddingVertical:1, paddingHorizontal:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}><Entypo style={{marginRight:2}} name="calendar" size={18} color="white"/> 
-        {mont}</Text>
+         -{mont}</Text>
       </Pressable>
     </View>
   )
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
       fontWeight: "bold",
       textAlign: "center",
       fontSize:20,
-      color:"blue"
+      color:"#fff"
     },
     modalText: {
   
