@@ -1,0 +1,403 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useState,useEffect } from "react";
+import DialogInput from 'react-native-dialog-input'//// ye dalna hai
+import { SafeAreaView, FlatList,Pressable,TextInput,PermissionsAndroid, StyleSheet, Text, View, TouchableOpacity,StatusBar,ToastAndroid,Alert,Modal } from "react-native";
+import Mod from "./Modal";
+import Budjet from "./budjet";
+import { MaterialIcons } from '@expo/vector-icons';
+import Cal from "./Cal"
+import Checkbox from 'expo-checkbox';
+import {Card} from 'react-native-shadow-cards';
+import Delete from "./Delete";
+import * as ImagePicker from "expo-image-picker";
+import {LinearGradient} from 'expo-linear-gradient';
+import * as Location from 'expo-location';
+//delete log genration
+import "./test.json"
+import * as Sharing from 'expo-sharing';
+// expo add expo-file-system expo-sharing docx
+import * as MediaLibrary from 'expo-media-library';
+import * as FileSystem from 'expo-file-system';
+import { Document, Packer, Paragraph, HeadingLevel, TextRun } from 'docx';
+import { AntDesign } from '@expo/vector-icons';
+
+//import * as Permissions from 'expo-permissions';
+//import { Constants, Permissions, ImagePicker } from 'expo';
+
+Date.prototype.getMonthName = function() {
+  var monthNames = [ "January", "February", "March", "April", "May", "June", 
+                     "July", "August", "September", "October", "November", "December" ];
+  return monthNames[this.getMonth()];
+}
+var ddt=String(`${new Date().getMonthName()}${new Date().getFullYear()}`)
+// console.log("type of check",ddt==="Febuary2023",typeof(ddt),typeof("Febuary2023"),ddt,"Febuary2023")
+export default function App1({navigation}) {
+  const [keys,keyset]=useState(ddt)// yanha se pronlem orginate ho rahi hai
+  const [month,setmonth]=useState(new Date().getMonthName())
+  const [Ddata,Setddata]=useState([])//isko set karo d data main
+  const [DlData,Setdldata]=useState([])
+  const [Total,SetTotal]=useState(0)
+  const [budget,setBudget]=useState(0)
+  const [premon,setpremon]=useState("")
+  const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
+  const [modalVisible,setModalVisible] = useState(false);
+  const [modalId,setModalI] = useState([]);
+
+
+
+  useEffect(() => {
+    //this function must be run on initial Loading special Ddata update
+     storagesave()
+     totalSet()
+     cal()
+     updatepriBudget()
+     console.log(keys, "ye key genrate ho rahi use effect se")
+     
+  }, [Ddata])
+
+
+  //
+  useEffect(()=>totalSet(),//total update on Keyfun 
+   [keyfun])
+   useEffect(() => {
+    center()
+    lastdelete()
+   },[]);
+   //
+   saveFile = async() => {
+    let filename = FileSystem.documentDirectory + `${keys}.json`;
+    FileSystem.writeAsStringAsync(filename, JSON.stringify(Ddata));
+    console.log("done")
+    Sharing.shareAsync(filename);
+  }
+
+//
+const keyfun= async(val1,val2)=>{
+console.log("ye cak ki update pe key ayi",`${val1}${val2}`)
+  if(val1==undefined){
+    console.log("not recive key")//agar nahi key tou
+  }else{   
+    keyset(String(`${val1}${val2}`))
+  const preconvert1=JSON.parse(await AsyncStorage.getItem(String(`${val1}${val2}`)))
+  Setddata(preconvert1)
+
+  setpremon(val1)}
+ // totalSet()
+}
+function IdRetrive(a,b,c,d,e){
+  setModalI([{"id":a,"item":b,"price":c,"month":d,"value":e}])
+ // item.id,item.item,item.price,item.month,item.value
+  setModalVisible(true)
+   console.log(a,b,c,d,e)
+}
+
+
+const  priceById = async (id,itm,prc,mnth,vel) => {
+
+  const dataa={"item":itm,"price":prc,"id":id,"month":mnth,"value":vel}
+
+  const filteredData = Ddata.filter(item => item.id !== id);
+ // Setddata({ Ddata: filteredData });
+ Setddata(filteredData)
+ if(Ddata.length > 1){
+
+ storagesave()
+}else{
+
+ await AsyncStorage.setItem(keys,"[]")
+ }
+
+  Setddata([...filteredData,dataa])
+
+  storagesave()
+
+}
+
+
+const  checkItemById = async (id,itm,prc,mnth,vel) => {
+
+  const dataa={"item":itm,"price":prc,"id":id,"month":mnth,"value":!vel}
+
+  const filteredData = Ddata.filter(item => item.id !== id);
+ // Setddata({ Ddata: filteredData });
+ Setddata(filteredData)
+ if(Ddata.length > 1){
+
+ storagesave()
+}else{
+
+ await AsyncStorage.setItem(keys,"[]")
+ }
+
+  Setddata([...filteredData,dataa])
+
+  storagesave()
+
+}
+
+
+async function Deletedata(keyss,database){
+  let convert =JSON.stringify(Ddata)
+  Setdldata(Ddata)
+
+    if(convert==="[]" ||convert===""){
+        // await AsyncStorage.setItem('@storage_Key',"[]")
+      //await AsyncStorage.removeItem('@storage_Key')
+   
+    }else{await AsyncStorage.setItem("@Deletelog",convert)
+
+  }
+
+}
+
+async function lastdelete(){
+  Setdldata(JSON.parse( await AsyncStorage.getItem("@Deletelog")))
+  
+}
+
+  const createAlert = (func,ale,msg) =>
+  Alert.alert(ale, msg, [
+    {
+      text: 'Cancel',
+      onPress: () => console.log('Cancel Pressed'),
+      style: 'cancel',
+    },
+    {text: 'OK', onPress: () => func()},
+  ]);
+
+  const totalSet=()=>{
+    try {// yanha problem hai
+    let value = 0
+    const lnt=Ddata.length===null ? 0:Ddata.length
+    // console.log(typeof(Ddata.length),Ddata.length, "ye set karna hai")
+    for (let i = 0; i < lnt; i++) {
+      value += Number(Ddata[i].price)
+
+    }
+
+  SetTotal(value)
+  } catch (error) {
+    SetTotal(0)
+    ToastAndroid.show('Request Was Unsuccessfully!', ToastAndroid.SHORT);
+   
+  
+  }
+    
+  }
+
+
+  async function updatepriBudget(){
+    try {
+      const val = await AsyncStorage.getItem('@storagebudget')
+    if(val){
+      setBudget(JSON.parse(val))
+    }
+    } catch (error) {
+   
+    }
+  
+  }
+
+  const cen =async (recive)=>{
+    if(recive){ 
+      }
+      setBudget(recive)
+      await AsyncStorage.setItem('@storagebudget',JSON.stringify(recive))
+      
+}
+
+  const  deleteItemById = async (id) => {
+
+    
+   const filteredData = Ddata.filter(item => item.id !== id);
+  // Setddata({ Ddata: filteredData });
+  Setddata(filteredData)
+  if(Ddata.length > 1){
+    // console.log("ye part chala storage wala",Ddata.length )
+  storagesave()
+}else{
+ 
+  await AsyncStorage.setItem(keys,"[]")
+  }
+}
+  
+  function findtotal(datarecive){
+    let value = 0
+    
+    for (let i = 0; i < datarecive.length; i++) {
+      value += Number(datarecive[i].price)
+    }
+  SetTotal(value)
+  }
+
+  async function storagesave(){ 
+    let convert =JSON.stringify(Ddata)
+
+   
+    if(convert==="[]" ||convert===""){
+   
+      // await AsyncStorage.setItem('@storage_Key',"[]")
+      //await AsyncStorage.removeItem('@storage_Key')
+   
+    }else{await AsyncStorage.setItem(keys,convert)///yanha kaunsi key ayiv fffffffffffffffffffffffffffffffff
+    
+  }
+
+  }
+
+
+async function cal(){
+try {
+  setmonth(Ddata[0].month)
+} catch (error) {
+  console.log(error)
+}
+
+
+}
+
+  const center =async (recive)=>{ 
+    // console.log("ye recive yaa add",recive)
+    if(recive){ 
+      if(typeof(Ddata)==null || Ddata==undefined){
+        Setddata([recive])// data null ho ja raha hai
+    // console.log(typeof(recive),"ye type aya")
+      
+    storagesave()
+      }else{
+        Setddata([...Ddata,recive])// data null ho ja raha hai
+        // console.log(typeof(recive),"ye type aya")
+          
+        storagesave()
+      }
+    
+  
+  }else{ 
+    // console.log("key ayi",keys)
+    const preconvert=JSON.parse(await AsyncStorage.getItem(keys))
+    console.log("ye key load hone per intisl",keys)
+
+      Setddata(preconvert)
+  }
+   
+  }
+  
+
+  return (
+    <SafeAreaView style={{flex:1}}>
+   <LinearGradient
+        // Button Linear Gradient
+        colors={['#4c669f', '#3b5998', '#192f6a']}
+        style={styles.container}>
+     <StatusBar
+        animated={true}
+        backgroundColor="black"
+      />
+    <View style={{width:"80%",height:"10%",alignSelf:"center",flexDirection:"row",justifyContent:"space-evenly",alignItems:"center"}}>
+    <View style={{justifyContent:"center"}}><TouchableOpacity onPress={() => navigation.navigate('Dmart')}><AntDesign name="pluscircleo" size={28} color="white" /></TouchableOpacity></View>
+    <Mod saveFile={saveFile} center={center}/><View style={{justifyContent:"center"}}><Delete saveFile={saveFile} val={DlData}/></View>
+    </View>
+    <FlatList 
+        data={Ddata}
+        renderItem={({ item }) => <Card  style={{flexDirection:"row", backgroundColor:"rgba(212, 233, 53, 0.68)", justifyContent:"space-between",marginVertical:3, borderRadius:15,alignSelf:"center"}}>
+        <View style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
+        <Checkbox style={{justifyContent:"center",alignItems:"center",marginHorizontal:8}} value={item.value} 
+        onValueChange={()=>checkItemById(item.id,item.item,item.price,item.month,item.value)} />
+        <View style={{padding:2}}><Text onPress={()=>createAlert(() => deleteItemById(item.id),"Delete Item","Sure want to remove item")} style={[styles.item,{borderColor:item.value?"rgba(184, 229, 226, 1)":"#fff",fontWeight:"bold"}]}>{item.item}</Text></View></View>
+        <View style={{marginVertical:2,marginHorizontal:5}}><TouchableOpacity  onPress={()=>IdRetrive(item.id,item.item,item.price,item.month,item.value)}><Text style={[styles.item,{borderColor:item.value?"rgba(184, 229, 226, 1)":"#fff",fontWeight:"bold"}]}>{item.price}</Text></TouchableOpacity></View></Card>}///
+        keyExtractor={(item) => item.id}/>
+      <View style={{alignItems:"center",flexDirection:"row",justifyContent:"center",backgroundColor:"rgba(0, 0, 0, 0.23)",borderRadius:10,marginVertical:5}}>
+     
+      <Card style={{borderRadius:12,alignSelf:"center",flexDirection:"row",justifyContent:"center",backgroundColor:"rgba(92, 72, 100, 0.75)",flex:1}}>
+<View style={{flexDirection:"row-reverse",justifyContent:"space-between",}}><Text style={{fontSize:23,color:"#fff",fontWeight:"bold",marginTop:2}}>Total</Text>
+<Text style={{fontSize:25,color:"#fff",paddingRight:5,fontWeight:"bold"}}>{Total}</Text></View>
+<View style={{justifyContent:"flex-end",marginLeft:5}}>
+<Text style={{fontSize:25,color:"yellow",fontWeight:"bold"}}>{premon}</Text></View>
+</Card>
+      
+      </View>
+      <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-evenly"}}>
+
+      <TouchableOpacity  onPress={()=>createAlert(async()=>{Deletedata(),AsyncStorage.removeItem(), Setddata("")},"Remove All Item","Delete Permanently")}><Card style={{width:"100%", flexDirection:"row",backgroundColor:"rgba(217, 189, 187, 0.69)",borderRadius:5}}>
+      <MaterialIcons name="delete-outline" size={35} color="white"/><Text style={{paddingRight:5, paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>Clear All</Text></Card></TouchableOpacity>
+
+      <Cal val={month} keyfun={keyfun}/> 
+      {/* <TouchableOpacity ><View style={{paddingHorizontal:5,backgroundColor:"grey",borderRadius:5}}><Text style={{ paddingHorizontal:5,paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>{month}</Text></View></TouchableOpacity> */}
+
+      {/* <TouchableOpacity ><View style={{paddingHorizontal:5,backgroundColor:"grey",borderRadius:5}}><Text style={{ paddingHorizontal:5,paddingVertical:5,textAlign:"center",fontWeight:"bold",fontStyle:"italic",fontSize:18,color:"white"}}>{month}</Text></View></TouchableOpacity> */}
+
+
+      <Budjet cen={cen} col={Total>budget?"red":"green"} val={budget}/>
+      {/* <TouchableOpacity onPress={async()=>{AsyncStorage.removeItem('@storage_Key'), Setddata("")}}><View style={{padding:4,backgroundColor:Total>budget?"red":"green",borderRadius:8}}><Text>Budget {budget}</Text></View></TouchableOpacity> */}
+      </View>
+      <DialogInput isDialogVisible={modalVisible}
+            title={"Enter Your Price"}
+            message={"Please enter"}
+            hintInput ={"1 2 3"}
+            submitInput={ (inputT) => {priceById(modalId[0].id,modalId[0].item,inputT,modalId[0].month,modalId[0].value),setModalVisible(false)}}
+            closeDialog={ () => {setModalVisible(false)}}>
+</DialogInput>
+</LinearGradient>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 10,   
+    flex: 1,marginTop:-5
+
+  },
+  item: {
+    padding: 15,
+    fontSize: 15,
+    elevation:0,
+    borderColor:"#fff",
+    borderWidth:2,
+    backgroundColor:"rgba(31, 87, 182, 0.68)",
+    borderRadius:20,
+    color:"#fff"
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+
+});
